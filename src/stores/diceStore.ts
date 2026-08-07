@@ -1,12 +1,11 @@
 import { create } from 'zustand'
-import type { ActiveRoll, Die, TargetMode } from '@/types'
+import type { ActiveRoll, TargetMode } from '@/types'
 import { parseDiceExpression, validateExpression } from '@/utils/diceParser'
 
 interface DiceStore {
   activeRoll: ActiveRoll | null
   history: string[]
   modifier: number
-
   roll: (expression: string) => { total: number } | null
   rollDie: (sides: number) => void
   setMode: (mode: TargetMode) => void
@@ -25,7 +24,6 @@ export const useDiceStore = create<DiceStore>((set, get) => ({
   roll: (expression) => {
     const validation = validateExpression(expression)
     if (!validation.valid) return null
-
     const result = parseDiceExpression(expression)
     set(state => ({
       activeRoll: {
@@ -42,56 +40,48 @@ export const useDiceStore = create<DiceStore>((set, get) => ({
 
   rollDie: (sides) => {
     const mod = get().modifier
-    const expr = `1d${sides}${mod !== 0 ? (mod > 0 ? '+' + mod : String(mod)) : ''}`
+    const expr = '1d' + sides + (mod !== 0 ? (mod > 0 ? '+' + mod : String(mod)) : '')
     get().roll(expr)
   },
 
-  setMode: (mode) =>
-    set(state => ({
-      activeRoll: state.activeRoll
-        ? { ...state.activeRoll, mode, aoeTargets: new Set() }
-        : null,
-    })),
+  setMode: (mode) => set(state => ({
+    activeRoll: state.activeRoll
+      ? { ...state.activeRoll, mode, aoeTargets: new Set() }
+      : null,
+  })),
 
-  toggleDie: (dieId) =>
-    set(state => {
-      if (!state.activeRoll) return state
-      return {
-        activeRoll: {
-          ...state.activeRoll,
-          dice: state.activeRoll.dice.map(d =>
-            d.id === dieId && !d.spent
-              ? { ...d, selected: !d.selected }
-              : d
-          ),
-        },
-      }
-    }),
+  toggleDie: (dieId) => set(state => {
+    if (!state.activeRoll) return state
+    return {
+      activeRoll: {
+        ...state.activeRoll,
+        dice: state.activeRoll.dice.map(d =>
+          d.id === dieId && !d.spent ? { ...d, selected: !d.selected } : d
+        ),
+      },
+    }
+  }),
 
   clearRoll: () => set({ activeRoll: null }),
 
-  clearSelection: () =>
-    set(state => {
-      if (!state.activeRoll) return state
-      return {
-        activeRoll: {
-          ...state.activeRoll,
-          dice: state.activeRoll.dice.map(d => ({ ...d, selected: false })),
-        },
-      }
-    }),
+  clearSelection: () => set(state => {
+    if (!state.activeRoll) return state
+    return {
+      activeRoll: {
+        ...state.activeRoll,
+        dice: state.activeRoll.dice.map(d => ({ ...d, selected: false })),
+      },
+    }
+  }),
 
   getSelectedSum: () => {
     const { activeRoll } = get()
     if (!activeRoll) return 0
-    let posSum = 0
-    let negSum = 0
-    activeRoll.dice
-      .filter(d => d.selected && !d.spent)
-      .forEach(d => {
-        if (d.sign === '+') posSum += d.value
-        else negSum += d.value
-      })
+    let posSum = 0, negSum = 0
+    activeRoll.dice.filter(d => d.selected && !d.spent).forEach(d => {
+      if (d.sign === '+') posSum += d.value
+      else negSum += d.value
+    })
     return posSum - negSum + activeRoll.modifier
   },
 

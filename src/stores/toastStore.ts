@@ -1,9 +1,6 @@
 import { create } from 'zustand'
 
-interface Toast {
-  id: number
-  message: string
-}
+interface Toast { id: number; message: string }
 
 interface ToastStore {
   toasts: Toast[]
@@ -15,7 +12,6 @@ let toastId = 0
 
 export const useToastStore = create<ToastStore>((set) => ({
   toasts: [],
-
   showToast: (message) => {
     const id = ++toastId
     set(state => ({ toasts: [...state.toasts, { id, message }] }))
@@ -23,7 +19,5 @@ export const useToastStore = create<ToastStore>((set) => ({
       set(state => ({ toasts: state.toasts.filter(t => t.id !== id) }))
     }, 3000)
   },
-
-  removeToast: (id) =>
-    set(state => ({ toasts: state.toasts.filter(t => t.id !== id) })),
+  removeToast: (id) => set(state => ({ toasts: state.toasts.filter(t => t.id !== id) })),
 }))

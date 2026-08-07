@@ -2,10 +2,7 @@ import type { StatusDefinition } from '@/types'
 
 export const STATUS_CATALOG: StatusDefinition[] = [
   {
-    id: 'burning_custom',
-    name: 'Горит (продвинутый)',
-    icon: '🔥',
-    color: '#e67e22',
+    id: 'burning_custom', name: 'Горит (продвинутый)', icon: '🔥', color: '#e67e22',
     description: 'Начало хода: 1d6 урона огнём. Можно снять действием.',
     logic: {
       nodes: [
@@ -17,10 +14,7 @@ export const STATUS_CATALOG: StatusDefinition[] = [
     },
   },
   {
-    id: 'regen_custom',
-    name: 'Регенерация',
-    icon: '💚',
-    color: '#2ecc71',
+    id: 'regen_custom', name: 'Регенерация', icon: '💚', color: '#2ecc71',
     description: 'Начало хода: восстановление 5 HP. Снимается при полном HP.',
     logic: {
       nodes: [
@@ -32,10 +26,7 @@ export const STATUS_CATALOG: StatusDefinition[] = [
     },
   },
   {
-    id: 'low_hp_panic',
-    name: 'Паника (низкие HP)',
-    icon: '😱',
-    color: '#9b59b6',
+    id: 'low_hp_panic', name: 'Паника (низкие HP)', icon: '😱', color: '#9b59b6',
     description: 'Автоматически накладывает Испуг при HP < 25%. Снимается при HP > 50%.',
     logic: {
       nodes: [
