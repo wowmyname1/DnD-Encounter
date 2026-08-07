@@ -8,6 +8,7 @@ interface DiceStore {
   modifier: number
   roll: (expression: string) => { total: number } | null
   rollDie: (sides: number) => void
+  rollExpression: (expression: string) => { total: number } | null
   setMode: (mode: TargetMode) => void
   toggleDie: (dieId: number) => void
   clearRoll: () => void
@@ -42,6 +43,10 @@ export const useDiceStore = create<DiceStore>((set, get) => ({
     const mod = get().modifier
     const expr = '1d' + sides + (mod !== 0 ? (mod > 0 ? '+' + mod : String(mod)) : '')
     get().roll(expr)
+  },
+
+  rollExpression: (expression) => {
+    return get().roll(expression)
   },
 
   setMode: (mode) => set(state => ({
