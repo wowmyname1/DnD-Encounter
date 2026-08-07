@@ -5,7 +5,9 @@ import { useCharacterStore } from '@/stores/characterStore'
 interface CombatStore extends CombatState {
   startCombat: () => void
   nextTurn: () => void
+  endCombat: () => void
   resetCombat: () => void
+  currentTurnId: number | null
 }
 
 export const useCombatStore = create<CombatStore>((set, get) => ({
@@ -13,6 +15,7 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
   turnOrder: [],
   currentTurnIndex: -1,
   round: 1,
+  currentTurnId: null,
 
   startCombat: () => {
     const { characters } = useCharacterStore.getState()
@@ -23,8 +26,15 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
       init: c.initiative || Math.floor(Math.random() * 20) + 1,
     }))
     withInit.sort((a, b) => b.init - a.init)
-    set({ active: true, turnOrder: withInit.map(w => w.id), currentTurnIndex: 0, round: 1 })
-    useCharacterStore.getState().triggerEvent(withInit[0].id, 'turnStart')
+    const turnOrderIds = withInit.map(w => w.id)
+    set({ 
+      active: true, 
+      turnOrder: turnOrderIds, 
+      currentTurnIndex: 0, 
+      round: 1,
+      currentTurnId: turnOrderIds[0]
+    })
+    useCharacterStore.getState().triggerEvent(turnOrderIds[0], 'turnStart')
   },
 
   nextTurn: () => {
@@ -47,13 +57,18 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
       })
       if (turnOrder.length === 0) { get().resetCombat(); return }
     }
-    set({ currentTurnIndex, round, turnOrder })
-    useCharacterStore.getState().triggerEvent(turnOrder[currentTurnIndex], 'turnStart')
+    const nextTurnId = turnOrder[currentTurnIndex]
+    set({ currentTurnIndex, round, turnOrder, currentTurnId: nextTurnId })
+    useCharacterStore.getState().triggerEvent(nextTurnId, 'turnStart')
   },
 
   resetCombat: () => {
     const { characters, updateCharacter } = useCharacterStore.getState()
     characters.forEach(c => updateCharacter(c.id, { initiative: 0 }))
-    set({ active: false, turnOrder: [], currentTurnIndex: -1, round: 1 })
+    set({ active: false, turnOrder: [], currentTurnIndex: -1, round: 1, currentTurnId: null })
+  },
+  
+  endCombat: () => {
+    set({ active: false, turnOrder: [], currentTurnIndex: -1, round: 1, currentTurnId: null })
   },
 }))
