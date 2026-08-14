@@ -4,13 +4,16 @@ export interface Character {
   id: number;
   name: string;
   type: 'pc' | 'npc';
-  avatarColor: string;
-  initiative: number;
+  classType: string;
+  level: number;
   hpMax: number;
   hpCur: number;
   hpTemp: number;
   ac: number;
-  level: number;
+  initiative: number;
+  color: string;
+  x: number;
+  y: number;
   statuses: StatusEffect[];
   quickRolls: QuickRoll[];
   isDead: boolean;
@@ -50,7 +53,7 @@ export interface Action {
 
 export interface QuickRoll {
   id: number;
-  label: string;
+  name: string;
   formula: string;
 }
 
@@ -58,23 +61,23 @@ export interface DiceRoll {
   id: number;
   expression: string;
   total: number;
-  dice: DieResult[];
-  modifier: number;
   timestamp: Date;
-  label?: string;
 }
 
 export interface DieResult {
   id: number;
   sides: number;
   value: number;
+  sign: string;
   selected: boolean;
   spent: boolean;
   dropped: boolean;
 }
 
 export interface ActiveRoll {
-  parseResult: ParsedDiceResult;
+  expression: string;
+  dice: DieResult[];
+  modifier: number;
   mode: 'single' | 'aoe' | 'spread';
   aoeTargets: Set<number>;
   animating: boolean;
@@ -113,8 +116,7 @@ export interface SpellEffect {
 
 export interface SavedRoll {
   id: number;
-  label: string;
-  expression: string;
+  formula: string;
 }
 
 export interface AppState {
