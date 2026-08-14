@@ -4,19 +4,28 @@ export interface Character {
   id: number;
   name: string;
   type: 'pc' | 'npc';
-  classType: string;
+  cls: string;
   level: number;
   hpMax: number;
   hpCur: number;
-  hpTemp: number;
+  tempHp: number;
   ac: number;
-  initiative: number;
+  init: number;
   color: string;
   x: number;
   y: number;
   statuses: StatusEffect[];
   quickRolls: QuickRoll[];
-  isDead: boolean;
+}
+
+export interface StatusDef {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  type: 'permanent' | 'timed';
+  description?: string;
+  logic?: StatusLogic;
 }
 
 export interface StatusEffect {
@@ -31,24 +40,23 @@ export interface StatusEffect {
 }
 
 export interface StatusLogic {
-  triggers?: string[];
-  conditions?: Condition[];
-  actions?: Action[];
+  nodes: StatusNode[];
 }
 
-export interface Condition {
-  check: string;
+export interface StatusNode {
+  id: number;
+  type: 'trigger' | 'condition' | 'action' | 'custom';
+  event?: string;
+  check?: string;
   op?: string;
   value?: number;
   statusId?: string;
+  action?: string;
   formula?: string;
-}
-
-export interface Action {
-  action: string;
-  formula?: string;
-  statusId?: string;
+  damageType?: string;
   duration?: number;
+  parentId?: number;
+  label?: string;
 }
 
 export interface QuickRoll {
@@ -68,7 +76,7 @@ export interface DieResult {
   id: number;
   sides: number;
   value: number;
-  sign: string;
+  sign: '+' | '-';
   selected: boolean;
   spent: boolean;
   dropped: boolean;
@@ -97,21 +105,31 @@ export interface Spell {
   description: string;
   level: number;
   school: string;
+  castingTime?: string;
+  range?: string;
+  duration?: string;
+  classes?: string[];
   logic: SpellLogic;
 }
 
 export interface SpellLogic {
   targetMode: 'single' | 'aoe' | 'spread';
-  save?: string;
-  onSuccess?: SpellEffect;
+  selfOnly?: boolean;
+  save?: {
+    ability: string;
+    dcFormula: string;
+  };
   onFail?: SpellEffect;
+  onSuccess?: SpellEffect;
 }
 
 export interface SpellEffect {
-  type: 'damage' | 'heal' | 'applyStatus';
+  type: 'damage' | 'heal' | 'applyStatus' | 'removeStatus';
   formula?: string;
+  damageType?: string;
   statusId?: string;
   duration?: number;
+  count?: number;
 }
 
 export interface SavedRoll {
@@ -136,12 +154,12 @@ export interface AppState {
   nextRollId: number;
   activeRoll: ActiveRoll | null;
   
-  // Status effects
-  customStatuses: StatusEffect[];
+  // Catalogs
+  customStatuses: StatusDef[];
   customSpells: Spell[];
   
   // UI State
   popupTargetId: number | null;
   lastTargetId: number | null;
-  selectedStatusTab: 'permanent' | 'timed' | 'custom';
+  selectedStatusTab: 'permanent' | 'timed';
 }
