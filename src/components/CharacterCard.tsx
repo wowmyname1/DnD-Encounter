@@ -12,6 +12,7 @@ interface CharacterCardProps {
   onAddQuickRoll: () => void;
   onQuickRoll: (formula: string) => void;
   onDelete: () => void;
+  onDuplicate: () => void;
 }
 
 const HP_PERCENT_COLORS = {
@@ -31,6 +32,7 @@ export function CharacterCard({
   onAddQuickRoll,
   onQuickRoll,
   onDelete,
+  onDuplicate,
 }: CharacterCardProps) {
   const hpPercent = (character.hpCur / character.hpMax) * 100;
   const hpBarColor = hpPercent > 50 ? HP_PERCENT_COLORS.high : hpPercent > 25 ? HP_PERCENT_COLORS.medium : HP_PERCENT_COLORS.low;
@@ -185,7 +187,7 @@ export function CharacterCard({
       {/* Actions */}
       <div className="flex gap-1">
         <button
-          onClick={onDelete}
+          onClick={onDuplicate}
           className="flex-1 py-1 border border-white/10 bg-white/[0.04] text-[#8892a4] rounded text-[10px] cursor-pointer transition-all hover:bg-white/10 hover:text-white"
         >
           Копия

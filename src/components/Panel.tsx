@@ -68,6 +68,13 @@ export function Panel({ title, type }: PanelProps) {
     setShowAddForm(false);
   };
 
+  const handleDuplicate = (char: Character) => {
+    addCharacter({
+      ...char,
+      name: `${char.name} (Копия)`,
+    });
+  };
+
   return (
     <div className="w-[310px] min-w-[310px] bg-[#16213e] flex flex-col overflow-hidden">
       <div className="p-3 font-[MedievalSharp] text-lg text-[#d4a843] border-b border-white/10 flex justify-between items-center flex-shrink-0">
@@ -99,6 +106,7 @@ export function Panel({ title, type }: PanelProps) {
               console.log('Quick roll:', formula);
             }}
             onDelete={() => removeCharacter(char.id)}
+            onDuplicate={() => handleDuplicate(char)}
           />
         ))}
         
