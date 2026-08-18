@@ -10,6 +10,7 @@ test -f app-combat.js
 test -f app-ui.js
 test -f app-char.js
 test -f app-core.js
+test -f app-setup.js
 test -f extensions-data.js
 test -f extensions-wizards.js
 test -f extensions-editor.js
@@ -25,6 +26,7 @@ test -s app-combat.js
 test -s app-ui.js
 test -s app-char.js
 test -s app-core.js
+test -s app-setup.js
 
 grep -Fq '<link rel="stylesheet" href="styles.css">' index.html
 grep -Fq '<script src="utils.js"></script>' index.html
@@ -35,6 +37,7 @@ grep -Fq '<script src="app-combat.js"></script>' index.html
 grep -Fq '<script src="app-ui.js"></script>' index.html
 grep -Fq '<script src="app-char.js"></script>' index.html
 grep -Fq '<script src="app-core.js"></script>' index.html
+grep -Fq '<script src="app-setup.js"></script>' index.html
 grep -Fq '<script src="extensions-data.js"></script>' index.html
 grep -Fq '<script src="extensions-wizards.js"></script>' index.html
 grep -Fq '<script src="extensions-editor.js"></script>' index.html
@@ -83,10 +86,13 @@ grep -Fq 'let statusUid' app-char.js
 grep -Fq 'function onCardClick' app-core.js
 grep -Fq 'function showFloatingText' app-core.js
 grep -Fq 'function addCharacter' app-core.js
-grep -Fq 'function showToast' app-core.js
-grep -Fq 'function setupDiceInput' app-core.js
-grep -Fq 'function setupGlobalListeners' app-core.js
+grep -Fq 'function placeTokens' app-core.js
 grep -Fq 'function init()' app-core.js
+
+grep -Fq 'const EXAMPLES' app-setup.js
+grep -Fq 'function setupDiceInput' app-setup.js
+grep -Fq 'function setupGlobalListeners' app-setup.js
+grep -Fq 'init();' app-setup.js
 
 grep -Fq 'SPELL_CATALOG' extensions-data.js
 grep -Fq 'statusWizard' extensions-wizards.js
