@@ -16,6 +16,7 @@ function applyDamage(id, amount) {
     if (absorbed > 0) txt += ` (🛡️${absorbed})`;
     showFloatingText(cardEl, txt, '#e94560');
   }
+  if (window.AppEvents) { if (!window.__inTrigger) window.AppEvents.emit("damage:taken", { id: id, amount: amount }); }
 }
 
 function applyHeal(id, amount) {

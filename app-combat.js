@@ -28,6 +28,7 @@ const expired = tickStatuses(currentChar.id);
   }
   updateTurnInfo();
   renderAll();
+  if (window.AppEvents) { if (turnOrder[currentTurnIndex]) window.AppEvents.emit("turn:start", turnOrder[currentTurnIndex].id); }
 }
 
 function updateTurnInfo() {
