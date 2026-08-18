@@ -7,6 +7,7 @@ test -f app-state.js
 test -f app-dice.js
 test -f app-hp.js
 test -f app-combat.js
+test -f app-ui.js
 test -f app-core.js
 test -f extensions-data.js
 test -f extensions-wizards.js
@@ -20,6 +21,7 @@ test -s app-state.js
 test -s app-dice.js
 test -s app-hp.js
 test -s app-combat.js
+test -s app-ui.js
 test -s app-core.js
 
 grep -Fq '<link rel="stylesheet" href="styles.css">' index.html
@@ -28,6 +30,7 @@ grep -Fq '<script src="app-state.js"></script>' index.html
 grep -Fq '<script src="app-dice.js"></script>' index.html
 grep -Fq '<script src="app-hp.js"></script>' index.html
 grep -Fq '<script src="app-combat.js"></script>' index.html
+grep -Fq '<script src="app-ui.js"></script>' index.html
 grep -Fq '<script src="app-core.js"></script>' index.html
 grep -Fq '<script src="extensions-data.js"></script>' index.html
 grep -Fq '<script src="extensions-wizards.js"></script>' index.html
@@ -56,10 +59,18 @@ grep -Fq 'function nextTurn' app-combat.js
 grep -Fq 'AppEvents.emit("turn:end"' app-combat.js
 grep -Fq 'AppEvents.emit("turn:start"' app-combat.js
 
+grep -Fq 'function renderAll' app-ui.js
+grep -Fq 'function renderPanel' app-ui.js
+grep -Fq 'function renderTokens' app-ui.js
+grep -Fq 'function makeDraggable' app-ui.js
+grep -Fq 'escapeHtml(c.name)' app-ui.js
+
 grep -Fq 'function onCardClick' app-core.js
+grep -Fq 'function showFloatingText' app-core.js
+grep -Fq 'function removeCharacter' app-core.js
+grep -Fq 'function openStatusModal' app-core.js
 grep -Fq 'function showToast' app-core.js
 grep -Fq 'function saveCharacter' app-core.js
-grep -Fq 'escapeHtml(c.name)' app-core.js
 
 grep -Fq 'SPELL_CATALOG' extensions-data.js
 grep -Fq 'statusWizard' extensions-wizards.js
