@@ -76,7 +76,7 @@ export interface DieResult {
   id: number;
   sides: number;
   value: number;
-  sign: '+' | '-';
+  sign?: '+' | '-';
   selected: boolean;
   spent: boolean;
   dropped: boolean;
@@ -89,6 +89,7 @@ export interface ActiveRoll {
   mode: 'single' | 'aoe' | 'spread';
   aoeTargets: Set<number>;
   animating: boolean;
+  parseResult?: ParsedDiceResult;
 }
 
 export interface ParsedDiceResult {
@@ -118,9 +119,9 @@ export interface SpellLogic {
   save?: {
     ability: string;
     dcFormula: string;
-  };
-  onFail?: SpellEffect;
-  onSuccess?: SpellEffect;
+  } | null;
+  onFail?: SpellEffect | null;
+  onSuccess?: SpellEffect | null;
 }
 
 export interface SpellEffect {
@@ -130,12 +131,25 @@ export interface SpellEffect {
   statusId?: string;
   duration?: number;
   count?: number;
+  acBonus?: number;
 }
 
 export interface SavedRoll {
   id: number;
+  label?: string;
   formula: string;
 }
+
+export interface StatusWizard {
+  id?: string;
+  name: string;
+  icon: string;
+  color: string;
+  description: string;
+  nodes: StatusNode[];
+}
+
+export interface SpellWizard extends Spell {}
 
 export interface AppState {
   // Characters
