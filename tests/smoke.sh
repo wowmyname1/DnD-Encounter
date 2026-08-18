@@ -5,6 +5,7 @@ test -f styles.css
 test -f utils.js
 test -f app-state.js
 test -f app-dice.js
+test -f app-hp.js
 test -f app-combat.js
 test -f app-core.js
 test -f extensions-data.js
@@ -17,6 +18,7 @@ test -f extensions-init.js
 
 test -s app-state.js
 test -s app-dice.js
+test -s app-hp.js
 test -s app-combat.js
 test -s app-core.js
 
@@ -24,6 +26,7 @@ grep -Fq '<link rel="stylesheet" href="styles.css">' index.html
 grep -Fq '<script src="utils.js"></script>' index.html
 grep -Fq '<script src="app-state.js"></script>' index.html
 grep -Fq '<script src="app-dice.js"></script>' index.html
+grep -Fq '<script src="app-hp.js"></script>' index.html
 grep -Fq '<script src="app-combat.js"></script>' index.html
 grep -Fq '<script src="app-core.js"></script>' index.html
 grep -Fq '<script src="extensions-data.js"></script>' index.html
@@ -43,13 +46,17 @@ grep -Fq 'STATUS_DEFS' app-state.js
 grep -Fq 'function parseDiceExpression' app-dice.js
 grep -Fq 'function rollExpression' app-dice.js
 
+grep -Fq 'function applyDamage' app-hp.js
+grep -Fq 'damage:taken' app-hp.js
+grep -Fq 'function applyHeal' app-hp.js
+grep -Fq 'function showHpPopup' app-hp.js
+
 grep -Fq 'function startCombat' app-combat.js
 grep -Fq 'function nextTurn' app-combat.js
 grep -Fq 'AppEvents.emit("turn:end"' app-combat.js
 grep -Fq 'AppEvents.emit("turn:start"' app-combat.js
 
-grep -Fq 'function applyDamage' app-core.js
-grep -Fq 'damage:taken' app-core.js
+grep -Fq 'function onCardClick' app-core.js
 grep -Fq 'function showToast' app-core.js
 grep -Fq 'function saveCharacter' app-core.js
 grep -Fq 'escapeHtml(c.name)' app-core.js
