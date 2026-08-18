@@ -848,7 +848,8 @@ function startCombat() {
 function nextTurn() {
   if (!combatActive || turnOrder.length === 0) return;
   const currentChar = turnOrder[currentTurnIndex];
-  const expired = tickStatuses(currentChar.id);
+    if (window.AppEvents) window.AppEvents.emit("turn:end", currentChar.id);
+const expired = tickStatuses(currentChar.id);
   expired.forEach(s => showToast(`⏰ Истёк: ${s.icon} ${s.name}`));
   currentTurnIndex++;
   if (currentTurnIndex >= turnOrder.length) {
@@ -1416,11 +1417,11 @@ function applyStatusFromCatalog(id) {
 }
 
 // --- Система триггеров для статусов ---
-let _inTrigger = false;
+window.__inTrigger = false;
 
 function executeStatusTriggers(charId, event, context = {}) {
-  if (_inTrigger) return;
-  _inTrigger = true;
+  if (window.__inTrigger) return;
+  window.__inTrigger = true;
   try {
     const c = characters.find(ch => ch.id === charId);
     if (!c) return;
@@ -1430,7 +1431,7 @@ function executeStatusTriggers(charId, event, context = {}) {
       const triggers = status.logic.nodes.filter(n => n.type === 'trigger' && n.event === event);
       triggers.forEach(trigger => executeNode(charId, status, trigger.id, context));
     });
-  } finally { _inTrigger = false; }
+  } finally { window.__inTrigger = false; }
 }
 
 function executeNode(charId, status, nodeId, context, depth = 0) {
@@ -1506,25 +1507,6 @@ function executeAction(charId, status, node, context) {
 }
 
 // --- Перехват оригинальных функций для интеграции ---
-const _origNextTurn = nextTurn;
-nextTurn = function() {
-  if (combatActive && turnOrder[currentTurnIndex]) {
-    const currentChar = turnOrder[currentTurnIndex];
-    executeStatusTriggers(currentChar.id, 'turnEnd');
-  }
-  _origNextTurn();
-  if (combatActive && turnOrder[currentTurnIndex]) {
-    const newChar = turnOrder[currentTurnIndex];
-    executeStatusTriggers(newChar.id, 'turnStart');
-  }
-};
-
-const _origApplyDamage = applyDamage;
-applyDamage = function(id, amount) {
-  _origApplyDamage(id, amount);
-  if (!_inTrigger) executeStatusTriggers(id, 'takeDamage', { damage: amount });
-};
-
 const _origOnCardClick = onCardClick;
 onCardClick = function(event, charId) {
   if (window.activeSpell?.selecting) {
@@ -1712,7 +1694,12 @@ function showSpellCastLog(spell, targets, dc) {
 // --- Инициализация расширений ---
 function initExtensions() {
   loadCustomData();
-  const headerInfo = document.getElementById('headerInfo');
+    if (window.AppEvents) {
+    window.AppEvents.on("turn:end", function (id) { executeStatusTriggers(id, "turnEnd"); });
+    window.AppEvents.on("turn:start", function (id) { executeStatusTriggers(id, "turnStart"); });
+    window.AppEvents.on("damage:taken", function (payload) { executeStatusTriggers(payload.id, "takeDamage", { damage: payload.amount }); });
+  }
+const headerInfo = document.getElementById('headerInfo');
   if (headerInfo && !document.getElementById('btnSpellCatalog')) {
     const btnStatus = document.createElement('button');
     btnStatus.className = 'catalog-header-btn';
