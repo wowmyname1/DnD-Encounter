@@ -145,3 +145,20 @@ function showSpellCastLog(spell, targets, dc) {
   };
 }
 
+
+window.applySpellTargetClasses = function () {
+  if (window.activeSpell) {
+    if (window.activeSpell.selecting) {
+      document.querySelectorAll(".char-card.spell-target").forEach(function (card) { card.classList.remove("spell-target"); });
+      characters.forEach(function (c) {
+        const card = document.querySelector(".char-card[data-char-id='" + c.id + "']");
+        if (card) {
+          let isTarget = false;
+          if (window.activeSpell.targets.has(c.id)) isTarget = true;
+          if (window.lastSpellTarget === c.id) isTarget = true;
+          if (isTarget) card.classList.add("spell-target");
+        }
+      });
+    }
+  }
+};

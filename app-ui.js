@@ -5,8 +5,8 @@ function renderAll() {
   renderInitOrder();
   document.getElementById('pcCount').textContent = characters.filter(c => c.type === 'pc').length;
   document.getElementById('npcCount').textContent = characters.filter(c => c.type === 'npc').length;
+  if (window.applySpellTargetClasses) { window.applySpellTargetClasses(); }
 }
-
 function renderPanel(type) {
   const list = document.getElementById(type === 'pc' ? 'pcList' : 'npcList');
   const chars = characters.filter(c => c.type === type);

@@ -1,4 +1,27 @@
 function onCardClick(event, charId) {
+  if (window.activeSpell) {
+    if (window.activeSpell.selecting) {
+      const spell = window.activeSpell.spell;
+      if (spell.logic.targetMode === "single") {
+        window.lastSpellTarget = charId;
+        window.activeSpell.selecting = false;
+        const c = characters.find(function (ch) { return ch.id === charId; });
+        if (c) {
+          showToast("Цель: " + c.name + ". Нажмите Применить заклинание.");
+        }
+        renderAll();
+        return;
+      }
+      if (window.activeSpell.targets.has(charId)) {
+        window.activeSpell.targets.delete(charId);
+      } else {
+        window.activeSpell.targets.add(charId);
+      }
+      showToast("Целей выбрано: " + window.activeSpell.targets.size);
+      renderAll();
+      return;
+    }
+  }
   if (!activeRoll) return;
   if (activeRoll.mode !== 'spread') return;
   const selectedDice = activeRoll.dice.filter(d => d.selected && !d.spent);

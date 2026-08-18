@@ -15,7 +15,6 @@ test -f extensions-data.js
 test -f extensions-wizards.js
 test -f extensions-editor.js
 test -f extensions-triggers.js
-test -f extensions-hooks.js
 test -f extensions-spells.js
 test -f extensions-init.js
 
@@ -42,7 +41,6 @@ grep -Fq '<script src="extensions-data.js"></script>' index.html
 grep -Fq '<script src="extensions-wizards.js"></script>' index.html
 grep -Fq '<script src="extensions-editor.js"></script>' index.html
 grep -Fq '<script src="extensions-triggers.js"></script>' index.html
-grep -Fq '<script src="extensions-hooks.js"></script>' index.html
 grep -Fq '<script src="extensions-spells.js"></script>' index.html
 grep -Fq '<script src="extensions-init.js"></script>' index.html
 
@@ -70,6 +68,7 @@ grep -Fq 'function renderPanel' app-ui.js
 grep -Fq 'function renderTokens' app-ui.js
 grep -Fq 'function makeDraggable' app-ui.js
 grep -Fq 'escapeHtml(c.name)' app-ui.js
+grep -Fq 'window.applySpellTargetClasses' app-ui.js
 
 grep -Fq 'function removeCharacter' app-char.js
 grep -Fq 'function openStatusModal' app-char.js
@@ -84,6 +83,7 @@ grep -Fq 'function saveCharacter' app-char.js
 grep -Fq 'let statusUid' app-char.js
 
 grep -Fq 'function onCardClick' app-core.js
+grep -Fq 'window.activeSpell' app-core.js
 grep -Fq 'function showFloatingText' app-core.js
 grep -Fq 'function addCharacter' app-core.js
 grep -Fq 'function placeTokens' app-core.js
@@ -101,8 +101,8 @@ grep -Fq 'renderNodes' extensions-editor.js
 grep -Fq 'executeStatusTriggers' extensions-triggers.js
 grep -Fq 'window.__inTrigger' extensions-triggers.js
 
-grep -Fq '_origOnCardClick' extensions-hooks.js
 grep -Fq 'castSpellFromCatalog' extensions-spells.js
+grep -Fq 'window.applySpellTargetClasses' extensions-spells.js
 
 grep -Fq 'initExtensions' extensions-init.js
 grep -Fq 'AppEvents.on("turn:start"' extensions-init.js
