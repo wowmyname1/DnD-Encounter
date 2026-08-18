@@ -504,11 +504,11 @@ function renderPanel(type) {
     const statusesHtml = c.statuses.map(s => {
       const durText = s.type === 'timed' ? `<span class="status-dur">${s.duration}</span>` : '';
       const permClass = s.type === 'permanent' ? 'permanent' : '';
-      return `<span class="status-badge ${permClass}" style="background:${s.color}" title="${s.name}${s.type === 'timed' ? ' (' + s.duration + ' раундов)' : ''}" onclick="removeStatus(${c.id}, ${s.uid})"><span class="status-icon">${s.icon}</span>${durText}</span>`;
+      return `<span class="status-badge ${permClass}" style="background:${s.color}" title="${escapeAttr(s.name)}${s.type === 'timed' ? ' (' + s.duration + ' раундов)' : ''}" onclick="removeStatus(${c.id}, ${s.uid})"><span class="status-icon">${s.icon}</span>${durText}</span>`;
     }).join('');
     const quickRollsHtml = c.quickRolls.map(qr => `
       <button class="quick-roll-btn" onclick="rollQuickFormula('${qr.formula}')">
-        ${qr.name}: ${qr.formula}
+        ${escapeHtml(qr.name)}: ${escapeHtml(qr.formula)}
         <span class="qr-del" onclick="event.stopPropagation(); deleteQuickRoll(${c.id}, ${qr.id})">✕</span>
       </button>`).join('');
     const tempPct = c.hpMax > 0 ? Math.min(100, ((c.tempHp || 0) / c.hpMax) * 100) : 0;
@@ -526,8 +526,8 @@ function renderPanel(type) {
       <div class="card-top">
         <div class="card-avatar" style="background:${c.color}">${initials}</div>
         <div class="card-info">
-          <div class="card-name">${c.name}</div>
-          <div class="card-subtitle">${c.cls} · Ур.${c.level} · AC ${c.ac}</div>
+          <div class="card-name">${escapeHtml(c.name)}</div>
+          <div class="card-subtitle">${escapeHtml(c.cls)} · Ур.${c.level} · AC ${c.ac}</div>
         </div>
         <div class="card-initiative">${c.init > 0 ? c.init : '—'}</div>
       </div>
@@ -593,9 +593,9 @@ function renderTokens() {
     token.style.left = c.x + 'px';
     token.style.top = c.y + 'px';
     token.dataset.id = c.id;
-    const statusDots = c.statuses.slice(0, 6).map(s => `<span class="token-status-dot" style="background:${s.color}" title="${s.name}"></span>`).join('');
+    const statusDots = c.statuses.slice(0, 6).map(s => `<span class="token-status-dot" style="background:${s.color}" title="${escapeAttr(s.name)}"></span>`).join('');
     const tempText = c.tempHp > 0 ? ` 🛡️${c.tempHp}` : '';
-    token.innerHTML = `${c.name.substring(0,2)}<span class="token-hp">${c.hpCur}${tempText}</span><div class="token-statuses">${statusDots}</div>`;
+    token.innerHTML = `${escapeHtml(c.name.substring(0,2))}<span class="token-hp">${c.hpCur}${tempText}</span><div class="token-statuses">${statusDots}</div>`;
     makeDraggable(token, c);
     map.appendChild(token);
   });
@@ -610,7 +610,7 @@ function renderInitOrder() {
   turnOrder.forEach((c, i) => {
     const item = document.createElement('div');
     item.className = `init-item${i === currentTurnIndex ? ' current' : ''}`;
-    item.innerHTML = `<span class="init-dot" style="background:${c.color}"></span><span class="init-val">${c.init}</span><span>${c.name}</span>`;
+    item.innerHTML = `<span class="init-dot" style="background:${c.color}"></span><span class="init-val">${c.init}</span><span>${escapeHtml(c.name)}</span>`;
     list.appendChild(item);
   });
 }
@@ -675,7 +675,7 @@ function renderStatusGrid(tab) {
   STATUS_DEFS[tab].forEach(s => {
     const opt = document.createElement('div');
     opt.className = 'status-option';
-    opt.innerHTML = `<span class="so-icon">${s.icon}</span><span class="so-name">${s.name}</span>`;
+    opt.innerHTML = `<span class="so-icon">${s.icon}</span><span class="so-name">${escapeHtml(s.name)}</span>`;
     opt.onclick = () => {
       selectedStatusDef = s;
       grid.querySelectorAll('.status-option').forEach(o => o.classList.remove('selected'));
@@ -1017,7 +1017,7 @@ function renderStatusCatalog() {
   if (search) allStatuses = allStatuses.filter(s => s.name.toLowerCase().includes(search));
   grid.innerHTML = allStatuses.map(s => `
     <div class="catalog-item" onclick="editStatusFromCatalog('${s.id}')">
-      <div class="catalog-item-header"><div class="catalog-item-name">${s.icon} ${s.name}</div></div>
+      <div class="catalog-item-header"><div class="catalog-item-name">${s.icon} ${escapeHtml(s.name)}</div></div>
       <div class="catalog-item-desc">${s.description || 'Без описания'}</div>
       <div class="catalog-item-actions">
         <button onclick="event.stopPropagation(); editStatusFromCatalog('${s.id}')">✏️ Редакт.</button>
@@ -1036,7 +1036,7 @@ function renderSpellCatalog() {
   grid.innerHTML = spells.map(s => `
     <div class="catalog-item" onclick="editSpellFromCatalog('${s.id}')">
       <div class="catalog-item-header">
-        <div class="catalog-item-name">${s.icon} ${s.name}</div>
+        <div class="catalog-item-name">${s.icon} ${escapeHtml(s.name)}</div>
         <div class="catalog-item-level">Ур. ${s.level || 'Заговор'}</div>
       </div>
       <div class="catalog-item-meta">
@@ -1685,7 +1685,7 @@ function showSpellCastLog(spell, targets, dc) {
       const results = log.querySelector('.target-results');
       const div = document.createElement('div');
       div.className = `target-result ${success ? 'success' : 'fail'}`;
-      div.innerHTML = `<span>${name}</span><span>${success ? '✅' : '❌'} ${details}</span>`;
+      div.innerHTML = `<span>${escapeHtml(name)}</span><span>${success ? '✅' : '❌'} ${details}</span>`;
       results.appendChild(div);
     }
   };
