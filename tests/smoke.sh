@@ -112,4 +112,6 @@ grep -Fq 'data-apply="damage"' index.html
 grep -Fq 'applyActiveRollToCharacter' app-hp.js
 grep -Fq 'onTokenClick' app-hp.js
 grep -Fq 'moved' app-ui.js
+grep -Fq 'applySpreadToCharacter(charId); return;' app-core.js
+grep -Fq 'const die = dice[0];' app-hp.js
 echo smoke OK

@@ -27,7 +27,7 @@ function onCardClick(event, charId) {
   const selectedDice = activeRoll.dice.filter(d => d.selected && !d.spent);
   if (selectedDice.length === 0) { showToast('Выберите кубик для разброса'); return; }
   const die = selectedDice[0];
-  applyDamage(charId, die.value);
+  applySpreadToCharacter(charId); return;
   die.spent = true;
   die.selected = false;
   const remaining = activeRoll.dice.filter(d => !d.spent);

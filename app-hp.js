@@ -207,3 +207,35 @@ function onTokenClick(charId) {
     renderAll();
   }
 }
+
+function applySpreadToCharacter(charId) {
+  if (!activeRoll) return;
+
+  const dice = activeRoll.dice.filter(function (d) { return !d.spent; });
+
+  if (dice.length === 0) {
+    showToast('Кубики закончились');
+    clearActiveRoll();
+    return;
+  }
+
+  const die = dice[0];
+  const type = activeRoll.applyType ? activeRoll.applyType : 'damage';
+
+  if (type === 'damage') applyDamage(charId, die.value);
+  if (type === 'heal') applyHeal(charId, die.value);
+  if (type === 'temp') applyTempHp(charId, die.value);
+
+  die.spent = true;
+  die.selected = false;
+
+  const remaining = activeRoll.dice.filter(function (d) { return !d.spent; });
+
+  if (remaining.length === 0) {
+    clearActiveRoll();
+    return;
+  }
+
+  updateActiveRollUI();
+  renderAll();
+}
