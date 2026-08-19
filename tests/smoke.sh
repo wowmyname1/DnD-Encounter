@@ -114,4 +114,8 @@ grep -Fq 'onTokenClick' app-hp.js
 grep -Fq 'moved' app-ui.js
 grep -Fq 'applySpreadToCharacter(charId); return;' app-core.js
 grep -Fq 'const die = dice[0];' app-hp.js
+grep -Fq 'pointer-events: auto' styles.css
+grep -Fq 'if (die.spent) die.spent = false;' app-dice.js
+grep -Fq 'if (d.selected) d.selected = false;' app-hp.js
+grep -Fq 'applySpreadToCharacter(charId); return;' app-core.js
 echo smoke OK

@@ -326,3 +326,10 @@
   .spell-cast-log .target-result { display: flex; justify-content: space-between; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; margin-top: 4px; }
   .spell-cast-log .target-result.success { background: rgba(78,204,163,0.15); color: var(--green); }
   .spell-cast-log .target-result.fail { background: rgba(233,69,96,0.15); color: var(--red); }
+
+.dice-tray-die.spent {
+  pointer-events: auto;
+  text-decoration: none;
+  opacity: 0.45;
+  cursor: pointer;
+}

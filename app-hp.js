@@ -239,3 +239,37 @@ function applySpreadToCharacter(charId) {
   updateActiveRollUI();
   renderAll();
 }
+
+function consumeSelectedDice() {
+  if (!activeRoll) return;
+
+  activeRoll.dice.forEach(function (d) {
+    if (d.selected) d.selected = false;
+  });
+
+  updateActiveRollUI();
+  renderAll();
+}
+
+function applySpreadToCharacter(charId) {
+  if (!activeRoll) return;
+
+  const selectedDice = activeRoll.dice.filter(function (d) { return d.selected; });
+
+  if (selectedDice.length === 0) {
+    showToast('Выберите кубик для разброса');
+    return;
+  }
+
+  const die = selectedDice[0];
+  const type = activeRoll.applyType ? activeRoll.applyType : 'damage';
+
+  if (type === 'damage') applyDamage(charId, die.value);
+  if (type === 'heal') applyHeal(charId, die.value);
+  if (type === 'temp') applyTempHp(charId, die.value);
+
+  die.selected = false;
+
+  updateActiveRollUI();
+  renderAll();
+}

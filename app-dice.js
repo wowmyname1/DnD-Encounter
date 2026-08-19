@@ -308,3 +308,13 @@ function updateActiveRollUI() {
     btn.classList.toggle('active', btn.dataset.apply === activeRoll.applyType);
   });
 }
+
+function toggleDie(dieId) {
+  if (!activeRoll || activeRoll.animating) return;
+  const die = activeRoll.dice.find(function (d) { return d.id === dieId; });
+  if (!die) return;
+  if (die.spent) die.spent = false;
+  die.selected = !die.selected;
+  updateActiveRollUI();
+  renderAll();
+}
