@@ -120,4 +120,6 @@ grep -Fq 'if (d.selected) d.selected = false;' app-hp.js
 grep -Fq 'applySpreadToCharacter(charId); return;' app-core.js
 grep -Fq 'aoeAction' app-ui.js
 grep -Fq 'временного HP' app-ui.js
+grep -Fq 'previewType' app-ui.js
+grep -Fq 'previewAmount' app-ui.js
 echo smoke OK

@@ -41,12 +41,44 @@ function renderPanel(type) {
     const tempText = c.tempHp > 0 ? `<span class="temp-indicator">🛡️${c.tempHp}</span>` : '';
     const hasActive = activeRoll !== null;
     const selectedSum = hasActive ? getSelectedSum() : 0;
-    let previewHtml = '';
-    if (hasActive && selectedSum > 0) {
-      if (activeRoll.mode === 'single') previewHtml = `<span class="hp-preview damage">-${selectedSum}</span>`;
-      else if (activeRoll.mode === 'aoe') previewHtml = `<span class="hp-preview damage">💥-${selectedSum}</span>`;
-      else if (activeRoll.mode === 'spread') previewHtml = `<span class="hp-preview damage">🎯</span>`;
+let previewHtml = '';
+if (hasActive) {
+  const previewType = activeRoll.applyType ? activeRoll.applyType : 'damage';
+  let previewClass = 'damage';
+  if (previewType === 'heal') previewClass = 'heal';
+  if (previewType === 'temp') previewClass = 'temp';
+
+  let previewSign = '-';
+  if (previewType === 'heal') previewSign = '+';
+  if (previewType === 'temp') previewSign = '+';
+
+  let previewAmount = selectedSum;
+
+  if (activeRoll.mode === 'spread') {
+    const previewDice = activeRoll.dice.filter(function (d) { return d.selected; });
+    previewAmount = previewDice.length > 0 ? previewDice[0].value : 0;
+  }
+
+  if (previewAmount > 0) {
+    if (activeRoll.mode === 'single') {
+      previewHtml = '<span class="hp-preview ' + previewClass + '">' + previewSign + previewAmount + '</span>';
     }
+
+    if (activeRoll.mode === 'aoe') {
+      let previewIcon = '💥';
+      if (previewType === 'heal') previewIcon = '💚';
+      if (previewType === 'temp') previewIcon = '🛡️';
+      previewHtml = '<span class="hp-preview ' + previewClass + '">' + previewIcon + previewSign + previewAmount + '</span>';
+    }
+
+    if (activeRoll.mode === 'spread') {
+      let previewIcon = '🎯';
+      if (previewType === 'heal') previewIcon = '💚';
+      if (previewType === 'temp') previewIcon = '🛡️';
+      previewHtml = '<span class="hp-preview ' + previewClass + '">' + previewIcon + previewSign + previewAmount + '</span>';
+    }
+  }
+}
     card.innerHTML = `
       <div class="card-top">
         <div class="card-avatar" style="background:${c.color}">${initials}</div>
