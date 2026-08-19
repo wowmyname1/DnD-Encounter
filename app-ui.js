@@ -90,7 +90,17 @@ function renderPanel(type) {
       btn.onclick = applyAoE;
       document.body.appendChild(btn);
     }
-    btn.textContent = `💥 Применить ${getSelectedSum()} урона к ${activeRoll.aoeTargets.size} целям`;
+    const aoeType = activeRoll.applyType ? activeRoll.applyType : "damage";
+let aoeAction = "урона";
+if (aoeType === "heal") aoeAction = "лечения";
+if (aoeType === "temp") aoeAction = "временного HP";
+let aoeIcon = "💥";
+if (aoeType === "heal") aoeIcon = "💚";
+if (aoeType === "temp") aoeIcon = "🛡️";
+btn.style.background = "var(--red)";
+if (aoeType === "heal") btn.style.background = "var(--green)";
+if (aoeType === "temp") btn.style.background = "var(--cyan)";
+btn.textContent = aoeIcon + " Применить " + getSelectedSum() + " " + aoeAction + " к " + activeRoll.aoeTargets.size + " целям";
   } else {
     const existingBtn = document.getElementById('aoeApplyBtn');
     if (existingBtn) existingBtn.remove();

@@ -118,4 +118,6 @@ grep -Fq 'pointer-events: auto' styles.css
 grep -Fq 'if (die.spent) die.spent = false;' app-dice.js
 grep -Fq 'if (d.selected) d.selected = false;' app-hp.js
 grep -Fq 'applySpreadToCharacter(charId); return;' app-core.js
+grep -Fq 'aoeAction' app-ui.js
+grep -Fq 'временного HP' app-ui.js
 echo smoke OK
