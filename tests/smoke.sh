@@ -18,8 +18,108 @@ test -f extensions-triggers.js
 test -f extensions-spells.js
 test -f extensions-init.js
 
-grep -Fq 'id="charStr"' index.html
-grep -Fq 'id="charUseHpFormula"' index.html
-grep -Fq 'id="charHpConFactor"' index.html
+test -s app-state.js
+test -s app-dice.js
+test -s app-hp.js
+test -s app-combat.js
+test -s app-ui.js
+test -s app-char.js
+test -s app-core.js
+test -s app-setup.js
 
-echo "smoke OK"
+grep -Fq '<link rel="stylesheet" href="styles.css">' index.html
+grep -Fq '<script src="utils.js"></script>' index.html
+grep -Fq '<script src="app-state.js"></script>' index.html
+grep -Fq '<script src="app-dice.js"></script>' index.html
+grep -Fq '<script src="app-hp.js"></script>' index.html
+grep -Fq '<script src="app-combat.js"></script>' index.html
+grep -Fq '<script src="app-ui.js"></script>' index.html
+grep -Fq '<script src="app-char.js"></script>' index.html
+grep -Fq '<script src="app-core.js"></script>' index.html
+grep -Fq '<script src="app-setup.js"></script>' index.html
+grep -Fq '<script src="extensions-data.js"></script>' index.html
+grep -Fq '<script src="extensions-wizards.js"></script>' index.html
+grep -Fq '<script src="extensions-editor.js"></script>' index.html
+grep -Fq '<script src="extensions-triggers.js"></script>' index.html
+grep -Fq '<script src="extensions-spells.js"></script>' index.html
+grep -Fq '<script src="extensions-init.js"></script>' index.html
+
+grep -Fq 'window.AppEvents' utils.js
+
+grep -Fq 'const COLORS' app-state.js
+grep -Fq 'let characters' app-state.js
+grep -Fq 'STATUS_DEFS' app-state.js
+
+grep -Fq 'function parseDiceExpression' app-dice.js
+grep -Fq 'function rollExpression' app-dice.js
+
+grep -Fq 'function applyDamage' app-hp.js
+grep -Fq 'damage:taken' app-hp.js
+grep -Fq 'function applyHeal' app-hp.js
+grep -Fq 'function showHpPopup' app-hp.js
+
+grep -Fq 'function startCombat' app-combat.js
+grep -Fq 'function nextTurn' app-combat.js
+grep -Fq 'AppEvents.emit("turn:end"' app-combat.js
+grep -Fq 'AppEvents.emit("turn:start"' app-combat.js
+
+grep -Fq 'function renderAll' app-ui.js
+grep -Fq 'function renderPanel' app-ui.js
+grep -Fq 'function renderTokens' app-ui.js
+grep -Fq 'function makeDraggable' app-ui.js
+grep -Fq 'escapeHtml(c.name)' app-ui.js
+grep -Fq 'window.applySpellTargetClasses' app-ui.js
+
+grep -Fq 'function removeCharacter' app-char.js
+grep -Fq 'function openStatusModal' app-char.js
+grep -Fq 'function saveStatus' app-char.js
+grep -Fq 'function tickStatuses' app-char.js
+grep -Fq 'function openQuickRollModal' app-char.js
+grep -Fq 'function saveQuickRoll' app-char.js
+grep -Fq 'function renderColorPicker' app-char.js
+grep -Fq 'function openModal' app-char.js
+grep -Fq 'function closeModal' app-char.js
+grep -Fq 'function saveCharacter' app-char.js
+grep -Fq 'let statusUid' app-char.js
+
+grep -Fq 'function onCardClick' app-core.js
+grep -Fq 'window.activeSpell' app-core.js
+grep -Fq 'function showFloatingText' app-core.js
+grep -Fq 'function addCharacter' app-core.js
+grep -Fq 'function placeTokens' app-core.js
+grep -Fq 'function init()' app-core.js
+
+grep -Fq 'const EXAMPLES' app-setup.js
+grep -Fq 'function setupDiceInput' app-setup.js
+grep -Fq 'function setupGlobalListeners' app-setup.js
+grep -Fq 'init();' app-setup.js
+
+grep -Fq 'SPELL_CATALOG' extensions-data.js
+grep -Fq 'statusWizard' extensions-wizards.js
+grep -Fq 'renderNodes' extensions-editor.js
+
+grep -Fq 'executeStatusTriggers' extensions-triggers.js
+grep -Fq 'window.__inTrigger' extensions-triggers.js
+
+grep -Fq 'castSpellFromCatalog' extensions-spells.js
+grep -Fq 'window.applySpellTargetClasses' extensions-spells.js
+
+grep -Fq 'initExtensions' extensions-init.js
+grep -Fq 'AppEvents.on("turn:start"' extensions-init.js
+
+grep -Fq 'setApplyType' app-dice.js
+grep -Fq 'data-apply="damage"' index.html
+grep -Fq 'applyActiveRollToCharacter' app-hp.js
+grep -Fq 'onTokenClick' app-hp.js
+grep -Fq 'moved' app-ui.js
+grep -Fq 'applySpreadToCharacter(charId); return;' app-core.js
+grep -Fq 'const die = dice[0];' app-hp.js
+grep -Fq 'pointer-events: auto' styles.css
+grep -Fq 'if (die.spent) die.spent = false;' app-dice.js
+grep -Fq 'if (d.selected) d.selected = false;' app-hp.js
+grep -Fq 'applySpreadToCharacter(charId); return;' app-core.js
+grep -Fq 'aoeAction' app-ui.js
+grep -Fq 'временного HP' app-ui.js
+grep -Fq 'previewType' app-ui.js
+grep -Fq 'previewAmount' app-ui.js
+echo smoke OK
