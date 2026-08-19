@@ -299,3 +299,48 @@ function saveCharacter() {
   closeModal();
   renderAll();
 }
+
+function abilityMod(score) {
+  return Math.floor((score - 10) / 2);
+}
+
+function formatMod(mod) {
+  if (mod >= 0) return '+' + mod;
+  return '' + mod;
+}
+
+function openCharDetails(charId) {
+  const c = characters.find(function (ch) { return ch.id === charId; });
+  if (!c) return;
+
+  const a = c.abilities ? c.abilities : { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
+
+  let hpFormulaText = 'Формула HP не включена';
+  if (c.useHpFormula) {
+    hpFormulaText = 'База: ' + c.hpBase + ' | За уровень: ' + c.hpPerLevel + ' | Коэф. CON: ' + c.hpConFactor + ' | Мод. CON: ' + formatMod(abilityMod(a.con));
+  }
+
+  const description = c.description ? escapeHtml(c.description) : 'Описания нет.';
+
+  document.getElementById('charDetailsTitle').textContent = c.name;
+
+  document.getElementById('charDetailsBody').innerHTML =
+    '<div class="details-grid">' +
+    '<div class="detail-box"><div class="detail-label">STR</div><div class="detail-value">' + a.str + ' (' + formatMod(abilityMod(a.str)) + ')</div></div>' +
+    '<div class="detail-box"><div class="detail-label">DEX</div><div class="detail-value">' + a.dex + ' (' + formatMod(abilityMod(a.dex)) + ')</div></div>' +
+    '<div class="detail-box"><div class="detail-label">CON</div><div class="detail-value">' + a.con + ' (' + formatMod(abilityMod(a.con)) + ')</div></div>' +
+    '<div class="detail-box"><div class="detail-label">INT</div><div class="detail-value">' + a.int + ' (' + formatMod(abilityMod(a.int)) + ')</div></div>' +
+    '<div class="detail-box"><div class="detail-label">WIS</div><div class="detail-value">' + a.wis + ' (' + formatMod(abilityMod(a.wis)) + ')</div></div>' +
+    '<div class="detail-box"><div class="detail-label">CHA</div><div class="detail-value">' + a.cha + ' (' + formatMod(abilityMod(a.cha)) + ')</div></div>' +
+    '</div>' +
+    '<div class="detail-box"><div class="detail-label">HP</div><div class="detail-text">' + c.hpCur + ' / ' + c.hpMax + '</div></div>' +
+    '<div class="detail-box"><div class="detail-label">AC / Инициатива</div><div class="detail-text">' + c.ac + ' / ' + c.init + '</div></div>' +
+    '<div class="detail-box"><div class="detail-label">Формула HP</div><div class="detail-text">' + escapeHtml(hpFormulaText) + '</div></div>' +
+    '<div class="detail-box"><div class="detail-label">Описание</div><div class="detail-text">' + description + '</div></div>';
+
+  document.getElementById('charDetailsModal').classList.add('show');
+}
+
+function closeCharDetails() {
+  document.getElementById('charDetailsModal').classList.remove('show');
+}

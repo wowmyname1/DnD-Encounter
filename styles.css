@@ -333,3 +333,39 @@
   opacity: 0.45;
   cursor: pointer;
 }
+
+.char-details {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.char-details .details-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.char-details .detail-box {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px;
+}
+
+.char-details .detail-label {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.char-details .detail-value {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.char-details .detail-text {
+  white-space: pre-wrap;
+  color: var(--text);
+  font-size: 13px;
+}
