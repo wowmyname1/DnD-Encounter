@@ -191,3 +191,111 @@ function saveCharacter() {
   renderAll();
 }
 
+
+function openModal(type) {
+  document.getElementById('charType').value = type;
+  document.getElementById('modalTitle').textContent = type === 'pc' ? 'Добавить персонажа' : 'Добавить NPC';
+  document.getElementById('charName').value = '';
+  document.getElementById('charClass').value = '';
+  document.getElementById('charLevel').value = 1;
+  document.getElementById('charAc').value = 10;
+  document.getElementById('charInit').value = 0;
+  document.getElementById('charHp').value = 1;
+  document.getElementById('charColor').value = getColor();
+  selectedColor = document.getElementById('charColor').value;
+
+  document.getElementById('charStr').value = 10;
+  document.getElementById('charDex').value = 10;
+  document.getElementById('charCon').value = 10;
+  document.getElementById('charInt').value = 10;
+  document.getElementById('charWis').value = 10;
+  document.getElementById('charCha').value = 10;
+
+  document.getElementById('charUseHpFormula').checked = false;
+  document.getElementById('charHpBase').value = 0;
+  document.getElementById('charHpPerLevel').value = 0;
+  document.getElementById('charHpConFactor').value = 1;
+
+  document.getElementById('charDescription').value = '';
+  document.getElementById('charSpellAbility').value = 'int';
+  document.getElementById('charSpellSaveDC').value = 0;
+  document.getElementById('charCantripBonus').value = 0;
+
+  renderColorPicker();
+  renderStatusGrid('permanent');
+  renderStatusGrid('timed');
+  document.getElementById('charModal').classList.add('show');
+}
+
+function saveCharacter() {
+  const type = document.getElementById('charType').value;
+  const name = document.getElementById('charName').value.trim();
+  const cls = document.getElementById('charClass').value;
+  const level = parseInt(document.getElementById('charLevel').value) || 1;
+  const ac = parseInt(document.getElementById('charAc').value) || 10;
+  const init = parseInt(document.getElementById('charInit').value) || 0;
+  const hpInput = parseInt(document.getElementById('charHp').value) || 1;
+  const description = document.getElementById('charDescription').value.trim();
+  const spellAbility = document.getElementById('charSpellAbility').value;
+  const spellSaveDC = parseInt(document.getElementById('charSpellSaveDC').value) || 0;
+  const cantripBonus = parseInt(document.getElementById('charCantripBonus').value) || 0;
+  const color = selectedColor || getColor();
+
+  const abilities = {
+    str: parseInt(document.getElementById('charStr').value) || 10,
+    dex: parseInt(document.getElementById('charDex').value) || 10,
+    con: parseInt(document.getElementById('charCon').value) || 10,
+    int: parseInt(document.getElementById('charInt').value) || 10,
+    wis: parseInt(document.getElementById('charWis').value) || 10,
+    cha: parseInt(document.getElementById('charCha').value) || 10
+  };
+
+  const useHpFormula = document.getElementById('charUseHpFormula').checked;
+  const hpBase = parseFloat(document.getElementById('charHpBase').value) || 0;
+  const hpPerLevel = parseFloat(document.getElementById('charHpPerLevel').value) || 0;
+  const hpConFactor = parseFloat(document.getElementById('charHpConFactor').value) || 0;
+
+  let hpMax = hpInput;
+
+  if (useHpFormula) {
+    const conMod = Math.floor((abilities.con - 10) / 2);
+    const levelCount = Math.max(0, level - 1);
+    hpMax = hpBase + conMod * hpConFactor + levelCount * (hpPerLevel + conMod * hpConFactor);
+    hpMax = Math.round(hpMax);
+    if (hpMax < 1) hpMax = 1;
+  }
+
+  if (!name) {
+    alert('Введите имя персонажа');
+    return;
+  }
+
+  characters.push({
+    id: nextId++,
+    type: type,
+    name: name,
+    cls: cls,
+    level: level,
+    ac: ac,
+    init: init,
+    hpMax: hpMax,
+    hpCur: hpMax,
+    color: color,
+    maxRolls: 0,
+    description: description,
+    spellAbility: spellAbility,
+    spellSaveDC: spellSaveDC,
+    cantripBonus: cantripBonus,
+    abilities: abilities,
+    useHpFormula: useHpFormula,
+    hpBase: hpBase,
+    hpPerLevel: hpPerLevel,
+    hpConFactor: hpConFactor,
+    statuses: [],
+    x: Math.random() * 300,
+    y: Math.random() * 300
+  });
+
+  closeModal();
+  renderAll();
+}
