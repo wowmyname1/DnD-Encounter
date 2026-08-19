@@ -145,3 +145,20 @@ function showToast(msg) {
   setTimeout(() => toast.remove(), 3000);
 }
 
+
+function applyAoE() {
+  if (!activeRoll) return;
+  if (activeRoll.aoeTargets.size === 0) return;
+
+  const val = getSelectedSum();
+  const type = activeRoll.applyType ? activeRoll.applyType : 'damage';
+
+  activeRoll.aoeTargets.forEach(function (charId) {
+    if (type === 'damage') applyDamage(charId, val);
+    if (type === 'heal') applyHeal(charId, val);
+    if (type === 'temp') applyTempHp(charId, val);
+  });
+
+  activeRoll.aoeTargets.clear();
+  consumeSelectedDice();
+}

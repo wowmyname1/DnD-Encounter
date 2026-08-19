@@ -140,25 +140,48 @@ function renderInitOrder() {
   });
 }
 
+
 function makeDraggable(token, char) {
-  let startX, startY, origX, origY;
-  token.addEventListener('mousedown', e => {
+  let startX = 0;
+  let startY = 0;
+  let origX = 0;
+  let origY = 0;
+  let moved = false;
+
+  token.addEventListener('mousedown', function (e) {
     e.preventDefault();
-    startX = e.clientX; startY = e.clientY;
-    origX = char.x; origY = char.y;
+    startX = e.clientX;
+    startY = e.clientY;
+    origX = char.x;
+    origY = char.y;
+    moved = false;
+
     const map = document.getElementById('mapContainer');
-    const onMove = ev => {
-      char.x = Math.max(0, Math.min(map.clientWidth - 50, origX + (ev.clientX - startX)));
-      char.y = Math.max(0, Math.min(map.clientHeight - 50, origY + (ev.clientY - startY)));
+
+    const onMove = function (ev) {
+      const dx = ev.clientX - startX;
+      const dy = ev.clientY - startY;
+
+      if (Math.abs(dx) > 4) moved = true;
+      if (Math.abs(dy) > 4) moved = true;
+
+      char.x = Math.max(0, Math.min(map.clientWidth - 50, origX + dx));
+      char.y = Math.max(0, Math.min(map.clientHeight - 50, origY + dy));
+
       token.style.left = char.x + 'px';
       token.style.top = char.y + 'px';
     };
-    const onUp = () => {
+
+    const onUp = function () {
       document.removeEventListener('mousemove', onMove);
       document.removeEventListener('mouseup', onUp);
+
+      if (!moved) {
+        if (typeof onTokenClick === 'function') onTokenClick(char.id);
+      }
     };
+
     document.addEventListener('mousemove', onMove);
     document.addEventListener('mouseup', onUp);
   });
 }
-

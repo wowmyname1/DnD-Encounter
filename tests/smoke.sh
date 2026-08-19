@@ -107,4 +107,9 @@ grep -Fq 'window.applySpellTargetClasses' extensions-spells.js
 grep -Fq 'initExtensions' extensions-init.js
 grep -Fq 'AppEvents.on("turn:start"' extensions-init.js
 
+grep -Fq 'setApplyType' app-dice.js
+grep -Fq 'data-apply="damage"' index.html
+grep -Fq 'applyActiveRollToCharacter' app-hp.js
+grep -Fq 'onTokenClick' app-hp.js
+grep -Fq 'moved' app-ui.js
 echo smoke OK

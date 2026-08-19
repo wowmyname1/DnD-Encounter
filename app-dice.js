@@ -213,3 +213,98 @@ function renderSavedRolls() {
     </span>`).join('');
 }
 
+
+function setActiveRoll(parseResult) {
+  const initialSelected = parseResult.allDice.filter(function (d) { return d.selected; }).length;
+  activeRoll = {
+    expression: parseResult.expression,
+    dice: parseResult.allDice,
+    modifier: parseResult.modifier,
+    mode: 'single',
+    applyType: 'damage',
+    aoeTargets: new Set(),
+    animating: true,
+    maxSelected: initialSelected > 0 ? initialSelected : parseResult.allDice.length
+  };
+  updateActiveRollUI();
+  renderAll();
+  setTimeout(function () {
+    if (activeRoll) {
+      activeRoll.animating = false;
+      updateActiveRollUI();
+    }
+  }, 600);
+}
+
+function setApplyType(type) {
+  if (!activeRoll) return;
+  activeRoll.applyType = type;
+  updateActiveRollUI();
+  renderAll();
+}
+
+function toggleDie(dieId) {
+  if (!activeRoll || activeRoll.animating) return;
+  const die = activeRoll.dice.find(function (d) { return d.id === dieId; });
+  if (!die || die.spent) return;
+  if (!die.selected) {
+    const selectedCount = activeRoll.dice.filter(function (d) { return d.selected && !d.spent; }).length;
+    if (activeRoll.maxSelected && selectedCount >= activeRoll.maxSelected) return;
+  }
+  die.selected = !die.selected;
+  updateActiveRollUI();
+  renderAll();
+}
+
+function setRollMode(mode) {
+  if (!activeRoll) return;
+  activeRoll.mode = mode;
+  activeRoll.aoeTargets.clear();
+  updateActiveRollUI();
+  renderAll();
+}
+
+function updateActiveRollUI() {
+  const resultEl = document.getElementById('diceResult');
+  const modeBar = document.getElementById('rollModeBar');
+  const tray = document.getElementById('diceTray');
+
+  if (!activeRoll) {
+    resultEl.textContent = '—';
+    resultEl.className = 'active-roll-total';
+    modeBar.classList.remove('show');
+    tray.innerHTML = '';
+    document.getElementById('diceResultLabel').textContent = 'Бросьте кубик';
+    return;
+  }
+
+  const sum = getSelectedSum();
+  resultEl.textContent = sum;
+  resultEl.className = 'active-roll-total has-dice';
+
+  if (activeRoll.dice.length === 1 && activeRoll.dice[0].sides === 20) {
+    if (activeRoll.dice[0].value === 20) resultEl.classList.add('nat20');
+    if (activeRoll.dice[0].value === 1) resultEl.classList.add('nat1');
+  }
+
+  document.getElementById('diceResultLabel').textContent = activeRoll.expression;
+
+  tray.innerHTML = activeRoll.dice.map(function (d, i) {
+    let cls = 'dice-tray-die';
+    if (d.selected && !d.spent) cls += ' selected';
+    if (d.spent) cls += ' spent';
+    const delay = activeRoll.animating ? (i * 0.08) + 's' : '0s';
+    const title = 'd' + d.sides + ': ' + d.value + (d.sign === '-' ? ' (вычитается)' : '');
+    return '<div class="' + cls + '" style="animation-delay:' + delay + '" onclick="toggleDie(' + d.id + ')" title="' + title + '">' + d.value + '</div>';
+  }).join('');
+
+  modeBar.classList.add('show');
+
+  document.querySelectorAll('.mode-btn[data-mode]').forEach(function (btn) {
+    btn.classList.toggle('active', btn.dataset.mode === activeRoll.mode);
+  });
+
+  document.querySelectorAll('.mode-btn[data-apply]').forEach(function (btn) {
+    btn.classList.toggle('active', btn.dataset.apply === activeRoll.applyType);
+  });
+}

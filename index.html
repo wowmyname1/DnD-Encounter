@@ -68,7 +68,11 @@
         <button class="mode-btn active" data-mode="single" onclick="setRollMode('single')">⚔️ Одиночный <span class="shortcut">1</span></button>
         <button class="mode-btn" data-mode="aoe" onclick="setRollMode('aoe')">💥 AoE <span class="shortcut">2</span></button>
         <button class="mode-btn" data-mode="spread" onclick="setRollMode('spread')">🎯 Разброс <span class="shortcut">3</span></button>
-        <button class="roll-clear-btn" onclick="clearActiveRoll()">✕ Сбросить</button>
+
+<button class="mode-btn apply-btn active" data-apply="damage" onclick="setApplyType(&#39;damage&#39;)">⚔️ Урон <span class="shortcut">D</span></button>
+<button class="mode-btn apply-btn" data-apply="heal" onclick="setApplyType(&#39;heal&#39;)">💚 Хил <span class="shortcut">H</span></button>
+<button class="mode-btn apply-btn" data-apply="temp" onclick="setApplyType(&#39;temp&#39;)">🛡️ Темп <span class="shortcut">T</span></button>
+<button class="roll-clear-btn" onclick="clearActiveRoll()">✕ Сбросить</button>
       </div>
     </div>
     <div class="dice-history" id="diceHistory"></div>

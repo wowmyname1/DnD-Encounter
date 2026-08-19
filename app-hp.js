@@ -90,3 +90,120 @@ function onHpBarClick(event, charId) {
   }
 }
 
+
+function onHpBarClick(event, charId) {
+  event.stopPropagation();
+
+  if (!activeRoll) {
+    const card = event.currentTarget.closest('.char-card');
+    const btn = card.querySelector('.hp-edit-btn');
+    toggleHpInlineInput(btn);
+    return;
+  }
+
+  lastTargetId = charId;
+
+  if (activeRoll.mode === 'single') {
+    applyActiveRollToCharacter(charId);
+  }
+
+  if (activeRoll.mode === 'spread') {
+    applySpreadToCharacter(charId);
+  }
+
+  if (activeRoll.mode === 'aoe') {
+    if (activeRoll.aoeTargets.has(charId)) {
+      activeRoll.aoeTargets.delete(charId);
+    } else {
+      activeRoll.aoeTargets.add(charId);
+    }
+    renderAll();
+  }
+}
+
+function applyActiveRollToCharacter(charId) {
+  if (!activeRoll) return;
+  const val = getSelectedSum();
+  if (val === 0) return;
+
+  const type = activeRoll.applyType ? activeRoll.applyType : 'damage';
+
+  if (type === 'damage') applyDamage(charId, val);
+  if (type === 'heal') applyHeal(charId, val);
+  if (type === 'temp') applyTempHp(charId, val);
+
+  consumeSelectedDice();
+}
+
+function applySpreadToCharacter(charId) {
+  if (!activeRoll) return;
+
+  const selectedDice = activeRoll.dice.filter(function (d) { return d.selected && !d.spent; });
+  if (selectedDice.length === 0) {
+    showToast('Выберите кубик для разброса');
+    return;
+  }
+
+  const die = selectedDice[0];
+  const type = activeRoll.applyType ? activeRoll.applyType : 'damage';
+
+  if (type === 'damage') applyDamage(charId, die.value);
+  if (type === 'heal') applyHeal(charId, die.value);
+  if (type === 'temp') applyTempHp(charId, die.value);
+
+  die.spent = true;
+  die.selected = false;
+
+  const remaining = activeRoll.dice.filter(function (d) { return !d.spent; });
+  if (remaining.length === 0) {
+    clearActiveRoll();
+    return;
+  }
+
+  updateActiveRollUI();
+  renderAll();
+  showToast('Осталось кубиков: ' + remaining.length);
+}
+
+function consumeSelectedDice() {
+  if (!activeRoll) return;
+
+  activeRoll.dice.forEach(function (d) {
+    if (d.selected && !d.spent) {
+      d.spent = true;
+      d.selected = false;
+    }
+  });
+
+  const remaining = activeRoll.dice.filter(function (d) { return !d.spent; });
+  if (remaining.length === 0) {
+    clearActiveRoll();
+    return;
+  }
+
+  updateActiveRollUI();
+  renderAll();
+}
+
+function onTokenClick(charId) {
+  if (!activeRoll) return;
+
+  lastTargetId = charId;
+
+  if (activeRoll.mode === 'single') {
+    applyActiveRollToCharacter(charId);
+  }
+
+  if (activeRoll.mode === 'spread') {
+    applySpreadToCharacter(charId);
+  }
+
+  if (activeRoll.mode === 'aoe') {
+    if (activeRoll.aoeTargets.has(charId)) {
+      activeRoll.aoeTargets.delete(charId);
+    } else {
+      activeRoll.aoeTargets.add(charId);
+    }
+    renderAll();
+  }
+}
