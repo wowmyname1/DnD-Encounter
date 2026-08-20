@@ -586,3 +586,190 @@ function closePresetCatalog() {
   const modal = document.getElementById('presetCatalogModal');
   if (modal) modal.classList.remove('show');
 }
+
+const CHARACTER_PRESETS = [
+  {
+    name: 'Воин',
+    type: 'pc',
+    cls: 'Воин',
+    level: 1,
+    ac: 16,
+    init: 1,
+    color: '#e94560',
+    abilities: { str: 16, dex: 12, con: 14, int: 10, wis: 12, cha: 10 },
+    useHpFormula: true,
+    hpBase: 10,
+    hpPerLevel: 6,
+    hpConFactor: 1,
+    description: 'Крепкий боец ближнего боя.',
+    spellAbility: '',
+    spellSaveDC: 0,
+    cantripBonus: 0
+  },
+  {
+    name: 'Волшебник',
+    type: 'pc',
+    cls: 'Волшебник',
+    level: 1,
+    ac: 12,
+    init: 2,
+    color: '#48dbfb',
+    abilities: { str: 8, dex: 14, con: 12, int: 15, wis: 10, cha: 13 },
+    useHpFormula: true,
+    hpBase: 6,
+    hpPerLevel: 4,
+    hpConFactor: 1,
+    description: 'Владеет тайной магией.',
+    spellAbility: 'int',
+    spellSaveDC: 13,
+    cantripBonus: 5
+  },
+  {
+    name: 'Жрец',
+    type: 'pc',
+    cls: 'Жрец',
+    level: 1,
+    ac: 14,
+    init: 0,
+    color: '#ffd32a',
+    abilities: { str: 14, dex: 10, con: 12, int: 10, wis: 15, cha: 13 },
+    useHpFormula: true,
+    hpBase: 8,
+    hpPerLevel: 5,
+    hpConFactor: 1,
+    description: 'Поддержка и лечение.',
+    spellAbility: 'wis',
+    spellSaveDC: 13,
+    cantripBonus: 5
+  },
+  {
+    name: 'Плут',
+    type: 'pc',
+    cls: 'Плут',
+    level: 1,
+    ac: 14,
+    init: 3,
+    color: '#2ecc71',
+    abilities: { str: 10, dex: 16, con: 12, int: 12, wis: 11, cha: 14 },
+    useHpFormula: true,
+    hpBase: 8,
+    hpPerLevel: 5,
+    hpConFactor: 1,
+    description: 'Скрытный и ловкий.',
+    spellAbility: '',
+    spellSaveDC: 0,
+    cantripBonus: 0
+  },
+  {
+    name: 'Гоблин',
+    type: 'npc',
+    cls: 'Гоблин',
+    level: 1,
+    ac: 15,
+    init: 2,
+    color: '#a3b18a',
+    abilities: { str: 8, dex: 14, con: 10, int: 10, wis: 8, cha: 8 },
+    useHpFormula: false,
+    hpMax: 7,
+    description: 'Быстрый и злобный.',
+    spellAbility: '',
+    spellSaveDC: 0,
+    cantripBonus: 0
+  },
+  {
+    name: 'Орк',
+    type: 'npc',
+    cls: 'Орк',
+    level: 1,
+    ac: 13,
+    init: 0,
+    color: '#b08968',
+    abilities: { str: 16, dex: 12, con: 16, int: 7, wis: 11, cha: 10 },
+    useHpFormula: false,
+    hpMax: 15,
+    description: 'Свирепый воин.',
+    spellAbility: '',
+    spellSaveDC: 0,
+    cantripBonus: 0
+  }
+];
+
+function presetHpMax(p) {
+  if (!p.useHpFormula) return p.hpMax || 1;
+
+  const con = p.abilities && p.abilities.con ? p.abilities.con : 10;
+  const conMod = Math.floor((con - 10) / 2);
+  const levelCount = Math.max(0, (p.level || 1) - 1);
+  const factor = typeof p.hpConFactor === 'number' ? p.hpConFactor : 1;
+
+  let hp = (p.hpBase || 0) + conMod * factor + levelCount * ((p.hpPerLevel || 0) + conMod * factor);
+  hp = Math.round(hp);
+
+  return hp > 0 ? hp : 1;
+}
+
+function renderPresetCatalog() {
+  const body = document.getElementById('presetCatalogBody');
+  if (!body) return;
+
+  let html = '';
+
+  CHARACTER_PRESETS.forEach(function (p, i) {
+    const hp = presetHpMax(p);
+    const typeLabel = p.type === 'pc' ? 'PC' : 'NPC';
+
+    html +=
+      '<div class="preset-item" onclick="addCharacterFromPreset(' + i + ')">' +
+      '<div class="preset-info">' +
+      '<div class="preset-name">' + escapeHtml(p.name) + '</div>' +
+      '<div class="preset-meta">' + typeLabel + ' · ' + escapeHtml(p.cls || '') + ' · Ур. ' + (p.level || 1) + ' · HP ' + hp + '</div>' +
+      '</div>' +
+      '<div class="preset-add">+</div>' +
+      '</div>';
+  });
+
+  body.innerHTML = html;
+}
+
+function addCharacterFromPreset(index) {
+  const p = CHARACTER_PRESETS[index];
+  if (!p) return;
+
+  const abilities = p.abilities ? p.abilities : { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
+  const hpMax = presetHpMax(p);
+
+  characters.push({
+    id: nextId++,
+    type: p.type || 'pc',
+    name: p.name || 'Пресет',
+    cls: p.cls || '',
+    level: p.level || 1,
+    ac: p.ac || 10,
+    init: p.init || 0,
+    hpMax: hpMax,
+    hpCur: hpMax,
+    color: p.color || '#e94560',
+    maxRolls: 0,
+    description: p.description || '',
+    spellAbility: p.spellAbility || '',
+    spellSaveDC: p.spellSaveDC || 0,
+    cantripBonus: p.cantripBonus || 0,
+    abilities: abilities,
+    useHpFormula: p.useHpFormula ? true : false,
+    hpBase: typeof p.hpBase === 'number' ? p.hpBase : 0,
+    hpPerLevel: typeof p.hpPerLevel === 'number' ? p.hpPerLevel : 0,
+    hpConFactor: typeof p.hpConFactor === 'number' ? p.hpConFactor : 1,
+    statuses: [],
+    x: Math.random() * 300,
+    y: Math.random() * 300
+  });
+
+  if (typeof closePresetCatalog === 'function') closePresetCatalog();
+  if (typeof renderAll === 'function') renderAll();
+}
+
+function openPresetCatalog() {
+  renderPresetCatalog();
+  const modal = document.getElementById('presetCatalogModal');
+  if (modal) modal.classList.add('show');
+}
