@@ -524,3 +524,53 @@ function saveCharacter() {
   if (typeof closeModal === 'function') closeModal();
   if (typeof renderAll === 'function') renderAll();
 }
+
+function openCharacterEditor(charId) {
+  const c = characters.find(function (ch) { return ch.id === charId; });
+  if (!c) return;
+
+  if (typeof closeCharDetails === 'function') closeCharDetails();
+
+  charFormSet('charType', c.type || 'pc');
+  charFormSet('charEditId', String(c.id));
+
+  const title = document.getElementById('modalTitle');
+  if (title) title.textContent = 'Редактировать: ' + c.name;
+
+  charFormSet('charName', c.name || '');
+  charFormSet('charClass', c.cls || '');
+  charFormSet('charLevel', c.level || 1);
+  charFormSet('charAc', c.ac || 10);
+  charFormSet('charInit', c.init || 0);
+  charFormSet('charHp', c.hpMax || 1);
+
+  const a = c.abilities ? c.abilities : { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
+
+  charFormSet('charStr', a.str);
+  charFormSet('charDex', a.dex);
+  charFormSet('charCon', a.con);
+  charFormSet('charInt', a.int);
+  charFormSet('charWis', a.wis);
+  charFormSet('charCha', a.cha);
+
+  charFormCheck('charUseHpFormula', c.useHpFormula ? true : false);
+  charFormSet('charHpBase', typeof c.hpBase === 'number' ? c.hpBase : 0);
+  charFormSet('charHpPerLevel', typeof c.hpPerLevel === 'number' ? c.hpPerLevel : 0);
+  charFormSet('charHpConFactor', typeof c.hpConFactor === 'number' ? c.hpConFactor : 1);
+
+  charFormSet('charDescription', c.description || '');
+  charFormSet('charSpellAbility', typeof c.spellAbility === 'string' ? c.spellAbility : '');
+  charFormSet('charSpellSaveDC', c.spellSaveDC || 0);
+  charFormSet('charCantripBonus', c.cantripBonus || 0);
+
+  const colorNode = document.getElementById('charColor');
+  if (colorNode) {
+    colorNode.value = c.color || '#e94560';
+    selectedColor = colorNode.value;
+  }
+
+  if (typeof renderColorPicker === 'function') renderColorPicker();
+
+  const modal = document.getElementById('charModal');
+  if (modal) modal.classList.add('show');
+}

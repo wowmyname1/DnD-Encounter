@@ -109,7 +109,9 @@ if (hasActive) {
       <div class="quick-rolls-row">${quickRollsHtml}<button class="add-roll-btn" onclick="openQuickRollModal(${c.id})">+ бросок</button></div>
       <div class="card-actions">
         <button class="card-btn" onclick="openModal('${type}', ${c.id})">✏️ Ред.</button>
-        <button class="card-btn danger" onclick="removeCharacter(${c.id})">🗑️</button>
+        <button class="card-action-btn" onclick="openCharacterEditor(${c.id})">✏️</button>
+<button class="card-action-btn" onclick="openCharDetails(${c.id})">📜</button>
+<button class="card-btn danger" onclick="removeCharacter(${c.id})">🗑️</button>
       </div>`;
     list.appendChild(card);
   });
