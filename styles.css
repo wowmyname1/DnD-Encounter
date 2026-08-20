@@ -369,3 +369,40 @@
   color: var(--text);
   font-size: 13px;
 }
+
+.preset-catalog {
+  display: grid;
+  gap: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.preset-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.preset-item:hover {
+  border-color: var(--accent);
+}
+
+.preset-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.preset-name {
+  font-weight: 700;
+}
+
+.preset-meta {
+  font-size: 12px;
+  color: var(--muted);
+}

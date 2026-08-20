@@ -574,3 +574,15 @@ function openCharacterEditor(charId) {
   const modal = document.getElementById('charModal');
   if (modal) modal.classList.add('show');
 }
+
+function openPresetCatalog() {
+  const body = document.getElementById('presetCatalogBody');
+  if (body) body.innerHTML = '<div class="preset-item"><div class="preset-info"><div class="preset-name">Каталог готовится</div><div class="preset-meta">Пресеты появятся на следующем шаге</div></div></div>';
+  const modal = document.getElementById('presetCatalogModal');
+  if (modal) modal.classList.add('show');
+}
+
+function closePresetCatalog() {
+  const modal = document.getElementById('presetCatalogModal');
+  if (modal) modal.classList.remove('show');
+}

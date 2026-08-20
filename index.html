@@ -318,6 +318,11 @@
 <div id="charDetailsBody" class="char-details"></div>
 <button class="btn" onclick="closeCharDetails()">Закрыть</button>
 </div>
+<div class="char-modal" id="presetCatalogModal">
+<h2>Каталог персонажей</h2>
+<div id="presetCatalogBody" class="preset-catalog"></div>
+<button class="btn" onclick="closePresetCatalog()">Закрыть</button>
+</div>
 <script src="utils.js"></script>
 <script src="app-state.js"></script>
 <script src="app-dice.js"></script>
@@ -333,5 +338,6 @@
 <script src="extensions-triggers.js"></script>
 <script src="extensions-spells.js"></script>
 <script src="extensions-init.js"></script>
+<button class="btn" style="position:fixed;bottom:12px;left:12px;z-index:900;" onclick="openPresetCatalog()">📚 Каталог персонажей</button>
 </body>
 </html>
