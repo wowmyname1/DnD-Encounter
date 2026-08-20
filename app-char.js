@@ -344,3 +344,183 @@ function openCharDetails(charId) {
 function closeCharDetails() {
   document.getElementById('charDetailsModal').classList.remove('show');
 }
+
+function charFormSet(id, value) {
+  const node = document.getElementById(id);
+  if (node) node.value = value;
+}
+
+function charFormCheck(id, value) {
+  const node = document.getElementById(id);
+  if (node) node.checked = value;
+}
+
+function charFormString(id) {
+  const node = document.getElementById(id);
+  return node ? node.value : '';
+}
+
+function charFormInt(id, fallback) {
+  const node = document.getElementById(id);
+  if (!node) return fallback;
+  const val = parseInt(node.value);
+  return isNaN(val) ? fallback : val;
+}
+
+function charFormFloat(id, fallback) {
+  const node = document.getElementById(id);
+  if (!node) return fallback;
+  const val = parseFloat(node.value);
+  return isNaN(val) ? fallback : val;
+}
+
+function openModal(type) {
+  charFormSet('charType', type);
+  charFormSet('charEditId', '');
+
+  const title = document.getElementById('modalTitle');
+  if (title) title.textContent = type === 'pc' ? 'Добавить персонажа' : 'Добавить NPC';
+
+  charFormSet('charName', '');
+  charFormSet('charClass', '');
+  charFormSet('charLevel', 1);
+  charFormSet('charAc', 10);
+  charFormSet('charInit', 0);
+  charFormSet('charHp', 1);
+
+  charFormSet('charStr', 10);
+  charFormSet('charDex', 10);
+  charFormSet('charCon', 10);
+  charFormSet('charInt', 10);
+  charFormSet('charWis', 10);
+  charFormSet('charCha', 10);
+
+  charFormCheck('charUseHpFormula', false);
+  charFormSet('charHpBase', 0);
+  charFormSet('charHpPerLevel', 0);
+  charFormSet('charHpConFactor', 1);
+
+  charFormSet('charDescription', '');
+  charFormSet('charSpellAbility', 'int');
+  charFormSet('charSpellSaveDC', 0);
+  charFormSet('charCantripBonus', 0);
+
+  const colorNode = document.getElementById('charColor');
+  if (colorNode) {
+    const fallbackColor = '#e94560';
+    colorNode.value = typeof getColor === 'function' ? getColor() : fallbackColor;
+    selectedColor = colorNode.value;
+  }
+
+  if (typeof renderColorPicker === 'function') renderColorPicker();
+
+  const modal = document.getElementById('charModal');
+  if (modal) modal.classList.add('show');
+}
+
+function saveCharacter() {
+  const type = charFormString('charType') || 'pc';
+  const name = charFormString('charName').trim();
+
+  if (!name) {
+    alert('Введите имя персонажа');
+    return;
+  }
+
+  const cls = charFormString('charClass');
+  const level = charFormInt('charLevel', 1);
+  const ac = charFormInt('charAc', 10);
+  const init = charFormInt('charInit', 0);
+  const hpInput = charFormInt('charHp', 1);
+  const description = charFormString('charDescription').trim();
+  const spellAbility = charFormString('charSpellAbility');
+  const spellSaveDC = charFormInt('charSpellSaveDC', 0);
+  const cantripBonus = charFormInt('charCantripBonus', 0);
+
+  let color = selectedColor;
+  if (!color) color = typeof getColor === 'function' ? getColor() : '#e94560';
+
+  const abilities = {
+    str: charFormInt('charStr', 10),
+    dex: charFormInt('charDex', 10),
+    con: charFormInt('charCon', 10),
+    int: charFormInt('charInt', 10),
+    wis: charFormInt('charWis', 10),
+    cha: charFormInt('charCha', 10)
+  };
+
+  const useNode = document.getElementById('charUseHpFormula');
+  const useHpFormula = useNode ? useNode.checked : false;
+  const hpBase = charFormFloat('charHpBase', 0);
+  const hpPerLevel = charFormFloat('charHpPerLevel', 0);
+  const hpConFactor = charFormFloat('charHpConFactor', 0);
+
+  let hpMax = hpInput;
+
+  if (useHpFormula) {
+    const conMod = Math.floor((abilities.con - 10) / 2);
+    const levelCount = Math.max(0, level - 1);
+    hpMax = hpBase + conMod * hpConFactor + levelCount * (hpPerLevel + conMod * hpConFactor);
+    hpMax = Math.round(hpMax);
+    if (hpMax < 1) hpMax = 1;
+  }
+
+  const editId = charFormInt('charEditId', 0);
+  const existing = editId > 0 ? characters.find(function (ch) { return ch.id === editId; }) : null;
+
+  if (existing) {
+    existing.type = type;
+    existing.name = name;
+    existing.cls = cls;
+    existing.level = level;
+    existing.ac = ac;
+    existing.init = init;
+    existing.color = color;
+    existing.description = description;
+    existing.spellAbility = spellAbility;
+    existing.spellSaveDC = spellSaveDC;
+    existing.cantripBonus = cantripBonus;
+    existing.abilities = abilities;
+    existing.useHpFormula = useHpFormula;
+    existing.hpBase = hpBase;
+    existing.hpPerLevel = hpPerLevel;
+    existing.hpConFactor = hpConFactor;
+
+    const oldMax = existing.hpMax;
+    existing.hpMax = hpMax;
+
+    if (oldMax !== hpMax) {
+      existing.hpCur = Math.min(existing.hpCur, hpMax);
+      if (existing.hpCur < 0) existing.hpCur = 0;
+    }
+  } else {
+    characters.push({
+      id: nextId++,
+      type: type,
+      name: name,
+      cls: cls,
+      level: level,
+      ac: ac,
+      init: init,
+      hpMax: hpMax,
+      hpCur: hpMax,
+      color: color,
+      maxRolls: 0,
+      description: description,
+      spellAbility: spellAbility,
+      spellSaveDC: spellSaveDC,
+      cantripBonus: cantripBonus,
+      abilities: abilities,
+      useHpFormula: useHpFormula,
+      hpBase: hpBase,
+      hpPerLevel: hpPerLevel,
+      hpConFactor: hpConFactor,
+      statuses: [],
+      x: Math.random() * 300,
+      y: Math.random() * 300
+    });
+  }
+
+  if (typeof closeModal === 'function') closeModal();
+  if (typeof renderAll === 'function') renderAll();
+}
