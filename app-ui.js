@@ -108,11 +108,8 @@ if (hasActive) {
       <div class="statuses-row">${statusesHtml}<button class="add-status-btn" onclick="openStatusModal(${c.id})">+ статус</button></div>
       <div class="quick-rolls-row">${quickRollsHtml}<button class="add-roll-btn" onclick="openQuickRollModal(${c.id})">+ бросок</button></div>
       <div class="card-actions">
-        <button class="card-btn" onclick="openModal('${type}', ${c.id})">✏️ Ред.</button>
-        <button class="card-action-btn" onclick="openCharacterEditor(${c.id})">✏️</button>
-<button class="card-action-btn" onclick="openCharDetails(${c.id})">📜</button>
-<button class="card-btn danger" onclick="removeCharacter(${c.id})">🗑️</button>
-      </div>`;
+<button class="card-action-btn" onclick="openCharMenu(event, ${c.id})">...</button>
+</div>`;
     list.appendChild(card);
   });
   if (activeRoll && activeRoll.mode === 'aoe' && activeRoll.aoeTargets.size > 0) {
