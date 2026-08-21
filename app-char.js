@@ -880,3 +880,48 @@ function openModal(type) {
 function openCharacterEditor(charId) {
   openCharacterModal('edit', charId);
 }
+
+function openCharMenu(event, charId) {
+  event.stopPropagation();
+
+  const menu = document.getElementById('charActionMenu');
+  if (!menu) return;
+
+  const c = characters.find(function (ch) { return ch.id === charId; });
+  if (!c) return;
+
+  menu.innerHTML =
+    '<button onclick="openCharacterModal(\'edit\', ' + charId + '); closeCharMenu();">Редактировать</button>' +
+    '<button onclick="openCharDetails(' + charId + '); closeCharMenu();">Детали</button>' +
+    '<button onclick="openStatusModal(' + charId + '); closeCharMenu();">Статусы</button>' +
+    '<button onclick="openQuickRollModal(' + charId + '); closeCharMenu();">Быстрый бросок</button>' +
+    '<button onclick="changeHp(' + charId + ', 1); closeCharMenu();">+1 HP</button>' +
+    '<button onclick="changeHp(' + charId + ', -1); closeCharMenu();">-1 HP</button>' +
+    '<button onclick="promptTempHp(' + charId + '); closeCharMenu();">Временные HP</button>' +
+    '<button onclick="removeCharacter(' + charId + '); closeCharMenu();">Удалить</button>';
+
+  const rect = event.currentTarget.getBoundingClientRect();
+
+  menu.style.left = rect.left + 'px';
+  menu.style.top = (rect.bottom + 4) + 'px';
+  menu.classList.add('show');
+
+  const menuRect = menu.getBoundingClientRect();
+
+  if (menuRect.bottom > window.innerHeight) {
+    menu.style.top = Math.max(4, rect.top - menuRect.height - 4) + 'px';
+  }
+
+  if (menuRect.right > window.innerWidth) {
+    menu.style.left = Math.max(4, window.innerWidth - menuRect.width - 4) + 'px';
+  }
+}
+
+function closeCharMenu() {
+  const menu = document.getElementById('charActionMenu');
+  if (menu) menu.classList.remove('show');
+}
+
+document.addEventListener('click', function () {
+  closeCharMenu();
+});
