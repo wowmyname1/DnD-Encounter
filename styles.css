@@ -412,3 +412,36 @@
   font-weight: 700;
   color: var(--accent);
 }
+
+.char-action-menu {
+  position: fixed;
+  display: none;
+  z-index: 1200;
+  min-width: 190px;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.char-action-menu.show {
+  display: block;
+}
+
+.char-action-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--text);
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.char-action-menu button:hover {
+  background: var(--border);
+}
