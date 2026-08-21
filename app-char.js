@@ -773,3 +773,110 @@ function openPresetCatalog() {
   const modal = document.getElementById('presetCatalogModal');
   if (modal) modal.classList.add('show');
 }
+
+function openCharacterModal(mode, charId) {
+  if (typeof closeCharDetails === 'function') closeCharDetails();
+  if (typeof closePresetCatalog === 'function') closePresetCatalog();
+
+  const editMode = mode === 'edit';
+  let c = null;
+  let type = 'pc';
+
+  if (editMode) {
+    c = characters.find(function (ch) { return ch.id === charId; });
+    if (!c) return;
+    type = c.type || 'pc';
+  } else if (mode === 'create-npc') {
+    type = 'npc';
+  }
+
+  charFormSet('charType', type);
+  charFormSet('charEditId', editMode ? String(c.id) : '');
+
+  const title = document.getElementById('modalTitle');
+  if (title) {
+    if (editMode) title.textContent = 'Редактировать: ' + c.name;
+    else if (type === 'npc') title.textContent = 'Создать NPC';
+    else title.textContent = 'Создать персонажа';
+  }
+
+  const saveBtn = document.querySelector('#charModal .btn-primary');
+  if (saveBtn) saveBtn.textContent = editMode ? 'Сохранить' : 'Добавить';
+
+  if (editMode) {
+    charFormSet('charName', c.name || '');
+    charFormSet('charClass', c.cls || '');
+    charFormSet('charLevel', c.level || 1);
+    charFormSet('charAc', c.ac || 10);
+    charFormSet('charInit', c.init || 0);
+    charFormSet('charHp', c.hpMax || 1);
+
+    const a = c.abilities ? c.abilities : { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
+
+    charFormSet('charStr', a.str);
+    charFormSet('charDex', a.dex);
+    charFormSet('charCon', a.con);
+    charFormSet('charInt', a.int);
+    charFormSet('charWis', a.wis);
+    charFormSet('charCha', a.cha);
+
+    charFormCheck('charUseHpFormula', c.useHpFormula ? true : false);
+    charFormSet('charHpBase', typeof c.hpBase === 'number' ? c.hpBase : 0);
+    charFormSet('charHpPerLevel', typeof c.hpPerLevel === 'number' ? c.hpPerLevel : 0);
+    charFormSet('charHpConFactor', typeof c.hpConFactor === 'number' ? c.hpConFactor : 1);
+
+    charFormSet('charDescription', c.description || '');
+    charFormSet('charSpellAbility', typeof c.spellAbility === 'string' ? c.spellAbility : '');
+    charFormSet('charSpellSaveDC', c.spellSaveDC || 0);
+    charFormSet('charCantripBonus', c.cantripBonus || 0);
+
+    const colorNode = document.getElementById('charColor');
+    if (colorNode) {
+      colorNode.value = c.color || '#e94560';
+      selectedColor = colorNode.value;
+    }
+  } else {
+    charFormSet('charName', '');
+    charFormSet('charClass', '');
+    charFormSet('charLevel', 1);
+    charFormSet('charAc', 10);
+    charFormSet('charInit', 0);
+    charFormSet('charHp', 1);
+
+    charFormSet('charStr', 10);
+    charFormSet('charDex', 10);
+    charFormSet('charCon', 10);
+    charFormSet('charInt', 10);
+    charFormSet('charWis', 10);
+    charFormSet('charCha', 10);
+
+    charFormCheck('charUseHpFormula', false);
+    charFormSet('charHpBase', 0);
+    charFormSet('charHpPerLevel', 0);
+    charFormSet('charHpConFactor', 1);
+
+    charFormSet('charDescription', '');
+    charFormSet('charSpellAbility', 'int');
+    charFormSet('charSpellSaveDC', 0);
+    charFormSet('charCantripBonus', 0);
+
+    const colorNode = document.getElementById('charColor');
+    if (colorNode) {
+      colorNode.value = typeof getColor === 'function' ? getColor() : '#e94560';
+      selectedColor = colorNode.value;
+    }
+  }
+
+  if (typeof renderColorPicker === 'function') renderColorPicker();
+
+  const modal = document.getElementById('charModal');
+  if (modal) modal.classList.add('show');
+}
+
+function openModal(type) {
+  openCharacterModal(type === 'npc' ? 'create-npc' : 'create-pc', 0);
+}
+
+function openCharacterEditor(charId) {
+  openCharacterModal('edit', charId);
+}
