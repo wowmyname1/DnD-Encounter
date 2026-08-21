@@ -83,7 +83,7 @@ if (hasActive) {
       <div class="card-top">
         <div class="card-avatar" style="background:${c.color}">${initials}</div>
         <div class="card-info">
-          <div class="card-name">${escapeHtml(c.name)}</div>
+          <div class="card-name" onclick="onCardNameClick(event, ${c.id})">${escapeHtml(c.name)}</div>
           <div class="card-subtitle">${escapeHtml(c.cls)} · Ур.${c.level} · AC ${c.ac}</div>
         </div>
         <div class="card-initiative">${c.init > 0 ? c.init : '—'}</div>

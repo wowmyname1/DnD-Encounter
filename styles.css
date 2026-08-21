@@ -445,3 +445,32 @@
 .char-action-menu button:hover {
   background: var(--border);
 }
+
+.details-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.details-actions button {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.details-actions button:hover {
+  border-color: var(--accent);
+}
+
+.card-name {
+  cursor: pointer;
+}
+
+.card-name:hover {
+  text-decoration: underline;
+}
