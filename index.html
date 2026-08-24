@@ -313,23 +313,9 @@
 
 <div class="toast-container" id="toastContainer"></div>
 
-<div class="char-modal" id="charDetailsModal">
-<h2 id="charDetailsTitle"></h2>
-<div id="charDetailsBody" class="char-details"></div>
 <button class="btn" onclick="closeCharDetails()">Закрыть</button>
 </div>
-<div class="char-modal" id="presetCatalogModal">
-<h2>Каталог персонажей</h2>
-<div id="presetCatalogBody" class="preset-catalog"></div>
 <button class="btn" onclick="closePresetCatalog()">Закрыть</button>
-</div>
-<div id="charActionMenu" class="char-action-menu"></div>
-<div class="char-modal" id="statusHubModal">
-<h2>Статусы</h2>
-<div class="status-hub-actions">
-<button class="btn" onclick="statusHubOpenCatalog()">Каталог статусов</button>
-<button class="btn" onclick="statusHubOpenConstructor()">Конструктор статусов</button>
-<button class="btn" onclick="closeStatusHub()">Закрыть</button>
 </div>
 </div>
 <script src="utils.js"></script>
@@ -348,6 +334,40 @@
 <script src="extensions-spells.js"></script>
 <script src="extensions-status-catalog.js"></script>
 <script src="extensions-init.js"></script>
-<button class="btn" style="position:fixed;bottom:12px;left:12px;z-index:900;" onclick="openPresetCatalog()">📚 Каталог персонажей</button>
+
+<div class="modal-overlay" id="charDetailsModal">
+  <div class="modal">
+    <h2 id="charDetailsTitle"></h2>
+    <div id="charDetailsBody" class="char-details"></div>
+    <div class="modal-actions">
+      <button class="modal-btn secondary" onclick="closeCharDetails()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="presetCatalogModal">
+  <div class="modal">
+    <h2>Каталог персонажей</h2>
+    <div id="presetCatalogBody" class="preset-catalog"></div>
+    <div class="modal-actions">
+      <button class="modal-btn secondary" onclick="closePresetCatalog()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="statusHubModal">
+  <div class="modal">
+    <h2>Статусы</h2>
+    <div class="status-hub-actions">
+      <button class="modal-btn primary" onclick="statusHubOpenCatalog()">Каталог статусов</button>
+      <button class="modal-btn primary" onclick="statusHubOpenConstructor()">Конструктор статусов</button>
+      <button class="modal-btn secondary" onclick="closeStatusHub()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div id="charActionMenu" class="char-action-menu"></div>
+
 </body>
+
 </html>
