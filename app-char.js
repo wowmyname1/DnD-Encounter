@@ -893,7 +893,7 @@ function openCharMenu(event, charId) {
   menu.innerHTML =
     '<button onclick="openCharacterModal(\'edit\', ' + charId + '); closeCharMenu();">Редактировать</button>' +
     '<button onclick="openCharDetails(' + charId + '); closeCharMenu();">Детали</button>' +
-    '<button onclick="openStatusModal(' + charId + '); closeCharMenu();">Статусы</button>' +
+    '<button onclick="openStatusHub(' + charId + '); closeCharMenu();">Статусы</button>' +
     '<button onclick="openQuickRollModal(' + charId + '); closeCharMenu();">Быстрый бросок</button>' +
     '<button onclick="changeHp(' + charId + ', 1); closeCharMenu();">+1 HP</button>' +
     '<button onclick="changeHp(' + charId + ', -1); closeCharMenu();">-1 HP</button>' +
@@ -979,4 +979,49 @@ function openCharDetails(charId) {
   document.getElementById('charDetailsTitle').textContent = c.name;
   document.getElementById('charDetailsBody').innerHTML = actions + info;
   document.getElementById('charDetailsModal').classList.add('show');
+}
+
+let statusHubTarget = 0;
+
+function openStatusHub(charId) {
+  statusHubTarget = charId || 0;
+  const modal = document.getElementById('statusHubModal');
+  if (modal) modal.classList.add('show');
+}
+
+function closeStatusHub() {
+  const modal = document.getElementById('statusHubModal');
+  if (modal) modal.classList.remove('show');
+}
+
+function statusHubOpenCatalog() {
+  const charId = statusHubTarget;
+  closeStatusHub();
+  if (typeof openStatusModal === 'function') openStatusModal(charId);
+}
+
+function statusHubOpenConstructor() {
+  closeStatusHub();
+
+  if (typeof openStatusWizard === 'function') {
+    openStatusWizard();
+    return;
+  }
+
+  if (typeof statusWizard === 'function') {
+    statusWizard();
+    return;
+  }
+
+  if (typeof openStatusEditor === 'function') {
+    openStatusEditor();
+    return;
+  }
+
+  if (typeof openStatusConstructor === 'function') {
+    openStatusConstructor();
+    return;
+  }
+
+  alert('Конструктор статусов не найден');
 }

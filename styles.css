@@ -474,3 +474,12 @@
 .card-name:hover {
   text-decoration: underline;
 }
+
+.status-hub-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.status-hub-actions .btn {
+  width: 100%;
+}
