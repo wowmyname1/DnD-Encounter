@@ -124,26 +124,45 @@
 </div>
 
 <div class="modal-overlay" id="charModal">
-  <div class="modal">
+  <div class="modal wide">
     <h2 id="modalTitle">Добавить персонажа</h2>
-    <input type="hidden" id="editId">
-    <input type="hidden" id="editType">
-    <div class="form-group"><label>Имя</label><input type="text" id="fName" placeholder="Имя персонажа"></div>
+    <input type="hidden" id="charType" value="pc">
+    <input type="hidden" id="charEditId" value="">
+    <div class="form-group"><label>Имя</label><input type="text" id="charName" placeholder="Имя персонажа"></div>
     <div class="form-row">
-      <div class="form-group"><label>Класс / Тип</label><input type="text" id="fClass" placeholder="Воин, Гоблин..."></div>
-      <div class="form-group"><label>Уровень / CR</label><input type="number" id="fLevel" value="1" min="1"></div>
+      <div class="form-group"><label>Класс / Тип</label><input type="text" id="charClass" placeholder="Воин, Гоблин..."></div>
+      <div class="form-group"><label>Уровень / CR</label><input type="number" id="charLevel" value="1" min="1"></div>
+      <div class="form-group"><label>Опыт</label><input type="number" id="charExp" value="0" min="0"></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label>HP Макс</label><input type="number" id="fHpMax" value="30" min="1"></div>
-      <div class="form-group"><label>HP Текущие</label><input type="number" id="fHpCur" value="30" min="0"></div>
+      <div class="form-group"><label>AC</label><input type="number" id="charAc" value="10" min="1"></div>
+      <div class="form-group"><label>Инициатива</label><input type="number" id="charInit" value="0"></div>
+      <div class="form-group"><label>HP</label><input type="number" id="charHp" value="10" min="1"></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label>AC</label><input type="number" id="fAc" value="10" min="1"></div>
-      <div class="form-group"><label>Инициатива</label><input type="number" id="fInit" value="0"></div>
+      <div class="form-group"><label>Сила</label><input type="number" id="charStr" value="10" min="1" max="30"></div>
+      <div class="form-group"><label>Ловкость</label><input type="number" id="charDex" value="10" min="1" max="30"></div>
+      <div class="form-group"><label>Телосложение</label><input type="number" id="charCon" value="10" min="1" max="30"></div>
     </div>
-    <div class="form-group"><label>Цвет</label><div class="color-picker-row" id="colorPicker"></div></div>
+    <div class="form-row">
+      <div class="form-group"><label>Интеллект</label><input type="number" id="charInt" value="10" min="1" max="30"></div>
+      <div class="form-group"><label>Мудрость</label><input type="number" id="charWis" value="10" min="1" max="30"></div>
+      <div class="form-group"><label>Харизма</label><input type="number" id="charCha" value="10" min="1" max="30"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Хит-дайс</label>
+        <select id="charHitDie">
+          <option value="6">d6 (Волшебник, Чародей)</option>
+          <option value="8" selected>d8 (Плут, Бард, Жрец, Друид)</option>
+          <option value="10">d10 (Воин, Паладин, Следопыт)</option>
+          <option value="12">d12 (Варвар)</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Цвет</label><input type="color" id="charColor" value="#e94560"></div>
+    </div>
+    <div class="form-group"><label>Описание</label><textarea id="charDescription" rows="2"></textarea></div>
     <div class="modal-actions">
-      <button class="modal-btn secondary" onclick="closeModal('charModal')">Отмена</button>
+      <button class="modal-btn secondary" onclick="closeModal(charModal)">Отмена</button>
       <button class="modal-btn primary" onclick="saveCharacter()">Сохранить</button>
     </div>
   </div>
