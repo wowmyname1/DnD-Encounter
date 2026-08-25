@@ -489,12 +489,6 @@
   filter: grayscale(100%);
 }
 
-.modal-overlay {
-  display: none;
-}
-
-.modal-overlay.show {
-  display: flex;
 }
 
 .exp-hint {
