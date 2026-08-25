@@ -496,3 +496,10 @@
 .modal-overlay.show {
   display: flex;
 }
+
+.exp-hint {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+  line-height: 1.3;
+}

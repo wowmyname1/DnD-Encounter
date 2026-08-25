@@ -131,8 +131,10 @@
     <div class="form-group"><label>Имя</label><input type="text" id="charName" placeholder="Имя персонажа"></div>
     <div class="form-row">
       <div class="form-group"><label>Класс / Тип</label><input type="text" id="charClass" placeholder="Воин, Гоблин..."></div>
-      <div class="form-group"><label>Уровень / CR</label><input type="number" id="charLevel" value="1" min="1"></div>
-      <div class="form-group"><label>Опыт</label><input type="number" id="charExp" value="0" min="0"></div>
+      <div class="form-group"><label>Уровень</label><input type="number" id="charLevel" value="1" min="1" readonly title="Рассчитывается из опыта"></div>
+      <div class="form-group"><label>Опыт</label><input type="number" id="charExp" value="0" min="0">
+        <div class="exp-hint">Ур.1: 0 | Ур.2: 300 | Ур.3: 900 | Ур.4: 2700 | Ур.5: 6500 | Ур.6: 14000 | Ур.7: 23000 | Ур.8: 34000 | Ур.9: 48000 | Ур.10: 64000</div>
+      </div>
     </div>
     <div class="form-row">
       <div class="form-group"><label>AC</label><input type="number" id="charAc" value="10" min="1"></div>
