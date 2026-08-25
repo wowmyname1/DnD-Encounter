@@ -1107,7 +1107,6 @@ function saveCharacter() {
   const cls = document.getElementById('charClass').value || '—';
   const exp = parseInt(document.getElementById("charExp").value) || 0;
   const level = expToLevel(exp);
-  const exp = parseInt(document.getElementById('charExp').value) || 0;
   const ac = parseInt(document.getElementById('charAc').value) || 10;
   const init = parseInt(document.getElementById('charInit').value) || 0;
   const abilities = {
