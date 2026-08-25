@@ -1025,3 +1025,147 @@ function statusHubOpenConstructor() {
 
   alert('Конструктор статусов не найден');
 }
+
+function getAbilityMod(score) {
+  return Math.floor((score - 10) / 2);
+}
+
+function calculateHpFromCon(hitDie, con, level) {
+  const conMod = getAbilityMod(con);
+  const maxAtFirst = hitDie + conMod;
+  const avgPerLevel = Math.floor(hitDie / 2) + 1 + conMod;
+  const hp = maxAtFirst + Math.max(0, level - 1) * avgPerLevel;
+  return Math.max(1, hp);
+}
+
+function expToLevel(exp) {
+  const table = [0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000, 85000, 100000, 120000, 140000, 165000, 195000, 225000, 265000, 305000, 355000];
+  let level = 1;
+  for (let i = 0; i < table.length; i++) {
+    if (exp >= table[i]) level = i + 1;
+  }
+  return Math.min(20, level);
+}
+
+function openModal(type) {
+  document.getElementById('charType').value = type;
+  document.getElementById('charEditId').value = '';
+  document.getElementById('modalTitle').textContent = type === 'pc' ? 'Добавить персонажа' : 'Добавить NPC';
+  document.getElementById('charName').value = '';
+  document.getElementById('charClass').value = '';
+  document.getElementById('charLevel').value = 1;
+  document.getElementById('charExp').value = 0;
+  document.getElementById('charAc').value = 10;
+  document.getElementById('charInit').value = 0;
+  document.getElementById('charHp').value = 10;
+  document.getElementById('charStr').value = 10;
+  document.getElementById('charDex').value = 10;
+  document.getElementById('charCon').value = 10;
+  document.getElementById('charInt').value = 10;
+  document.getElementById('charWis').value = 10;
+  document.getElementById('charCha').value = 10;
+  document.getElementById('charHitDie').value = '8';
+  document.getElementById('charColor').value = getColor();
+  selectedColor = document.getElementById('charColor').value;
+  document.getElementById('charDescription').value = '';
+  if (typeof renderColorPicker === 'function') renderColorPicker();
+  document.getElementById('charModal').classList.add('show');
+}
+
+function openCharacterEditor(charId) {
+  const c = characters.find(ch => ch.id === charId);
+  if (!c) return;
+  document.getElementById('charType').value = c.type || 'pc';
+  document.getElementById('charEditId').value = String(c.id);
+  document.getElementById('modalTitle').textContent = 'Редактировать: ' + c.name;
+  document.getElementById('charName').value = c.name || '';
+  document.getElementById('charClass').value = c.cls || '';
+  document.getElementById('charLevel').value = c.level || 1;
+  document.getElementById('charExp').value = c.exp || 0;
+  document.getElementById('charAc').value = c.ac || 10;
+  document.getElementById('charInit').value = c.init || 0;
+  document.getElementById('charHp').value = c.hpMax || 10;
+  document.getElementById('charStr').value = c.abilities ? c.abilities.str : 10;
+  document.getElementById('charDex').value = c.abilities ? c.abilities.dex : 10;
+  document.getElementById('charCon').value = c.abilities ? c.abilities.con : 10;
+  document.getElementById('charInt').value = c.abilities ? c.abilities.int : 10;
+  document.getElementById('charWis').value = c.abilities ? c.abilities.wis : 10;
+  document.getElementById('charCha').value = c.abilities ? c.abilities.cha : 10;
+  document.getElementById('charHitDie').value = c.hitDie || '8';
+  document.getElementById('charColor').value = c.color || '#e94560';
+  selectedColor = c.color || '#e94560';
+  document.getElementById('charDescription').value = c.description || '';
+  if (typeof renderColorPicker === 'function') renderColorPicker();
+  document.getElementById('charModal').classList.add('show');
+}
+
+function saveCharacter() {
+  const type = document.getElementById('charType').value;
+  const editId = document.getElementById('charEditId').value;
+  const name = document.getElementById('charName').value.trim() || 'Безымянный';
+  const cls = document.getElementById('charClass').value || '—';
+  const level = parseInt(document.getElementById('charLevel').value) || 1;
+  const exp = parseInt(document.getElementById('charExp').value) || 0;
+  const ac = parseInt(document.getElementById('charAc').value) || 10;
+  const init = parseInt(document.getElementById('charInit').value) || 0;
+  const abilities = {
+    str: parseInt(document.getElementById('charStr').value) || 10,
+    dex: parseInt(document.getElementById('charDex').value) || 10,
+    con: parseInt(document.getElementById('charCon').value) || 10,
+    int: parseInt(document.getElementById('charInt').value) || 10,
+    wis: parseInt(document.getElementById('charWis').value) || 10,
+    cha: parseInt(document.getElementById('charCha').value) || 10
+  };
+  const hitDie = parseInt(document.getElementById('charHitDie').value) || 8;
+  const color = selectedColor || getColor();
+  const description = document.getElementById('charDescription').value.trim();
+  const hpMax = calculateHpFromCon(hitDie, abilities.con, level);
+
+  if (editId !== '') {
+    const c = characters.find(ch => ch.id === parseInt(editId));
+    if (c) {
+      c.type = type;
+      c.name = name;
+      c.cls = cls;
+      c.level = level;
+      c.exp = exp;
+      c.ac = ac;
+      c.init = init;
+      c.abilities = abilities;
+      c.hitDie = hitDie;
+      c.color = color;
+      c.description = description;
+      const oldMax = c.hpMax;
+      c.hpMax = hpMax;
+      if (oldMax !== hpMax) {
+        c.hpCur = Math.min(c.hpCur, hpMax);
+        if (c.hpCur < 0) c.hpCur = 0;
+      }
+    }
+  } else {
+    const map = document.getElementById('mapContainer');
+    characters.push({
+      id: nextId++,
+      type,
+      name,
+      cls,
+      level,
+      exp,
+      ac,
+      init,
+      abilities,
+      hitDie,
+      hpMax,
+      hpCur: hpMax,
+      color,
+      description,
+      statuses: [],
+      quickRolls: [],
+      tempHp: 0,
+      x: 100 + Math.random() * (map.clientWidth - 200),
+      y: 100 + Math.random() * (map.clientHeight - 200)
+    });
+  }
+  closeModal('charModal');
+  renderAll();
+}
