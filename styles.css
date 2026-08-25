@@ -483,3 +483,16 @@
 .status-hub-actions .btn {
   width: 100%;
 }
+
+.map-token.dead-token {
+  opacity: 0.4;
+  filter: grayscale(100%);
+}
+
+.modal-overlay {
+  display: none;
+}
+
+.modal-overlay.show {
+  display: flex;
+}

@@ -231,7 +231,8 @@ function saveCharacter() {
   const type = document.getElementById('charType').value;
   const name = document.getElementById('charName').value.trim();
   const cls = document.getElementById('charClass').value;
-  const level = parseInt(document.getElementById('charLevel').value) || 1;
+  const exp = parseInt(document.getElementById("charExp").value) || 0;
+  const level = expToLevel(exp);
   const ac = parseInt(document.getElementById('charAc').value) || 10;
   const init = parseInt(document.getElementById('charInit').value) || 0;
   const hpInput = parseInt(document.getElementById('charHp').value) || 1;
@@ -1104,7 +1105,8 @@ function saveCharacter() {
   const editId = document.getElementById('charEditId').value;
   const name = document.getElementById('charName').value.trim() || 'Безымянный';
   const cls = document.getElementById('charClass').value || '—';
-  const level = parseInt(document.getElementById('charLevel').value) || 1;
+  const exp = parseInt(document.getElementById("charExp").value) || 0;
+  const level = expToLevel(exp);
   const exp = parseInt(document.getElementById('charExp').value) || 0;
   const ac = parseInt(document.getElementById('charAc').value) || 10;
   const init = parseInt(document.getElementById('charInit').value) || 0;
