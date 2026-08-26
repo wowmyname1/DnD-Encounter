@@ -120,7 +120,8 @@ function deleteQuickRoll(charId, rollId) {
 }
 
 function renderColorPicker() {
-  const picker = document.getElementById('colorPicker');
+  const picker = document.getElementById("colorPicker");
+  if (!picker) return;
   picker.innerHTML = '';
   COLORS.forEach(color => {
     const sw = document.createElement('div');
