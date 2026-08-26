@@ -276,5 +276,5 @@ function clearSpellSelection() {
   window.lastSpellTarget = null;
   const btn = document.getElementById('spellCastBtn');
   if (btn) btn.remove();
-  if (typeof removeSpellTargetClasses === 'function') removeSpellTargetClasses();
+  if (typeof renderAll === "function") renderAll();
 }
