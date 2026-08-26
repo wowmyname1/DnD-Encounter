@@ -859,3 +859,7 @@ function saveCharacter() {
   closeModal('charModal');
   renderAll();
 }
+
+function getColor() {
+  return selectedColor || COLORS[0] || '#e94560';
+}
