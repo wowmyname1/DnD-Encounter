@@ -69,7 +69,7 @@ function applyPopupAction(type) {
   else if (type === 'heal') applyHeal(popupTargetId, val);
   else if (type === 'temp') applyTempHp(popupTargetId, val);
   closeHpPopup();
-  clearSelection();
+  consumeSelectedDice();
 }
 
 function onHpBarClick(event, charId) {

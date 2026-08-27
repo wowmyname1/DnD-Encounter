@@ -1,8 +1,8 @@
 function startCombat() {
   const alive = characters.filter(c => c.hpCur > 0);
   if (alive.length === 0) return;
-  alive.forEach(c => { if (c.init === 0) c.init = Math.floor(Math.random() * 20) + 1; });
-  turnOrder = [...alive].sort((a, b) => b.init - a.init);
+  alive.forEach(c => { c.initiativeScore = (Math.floor(Math.random() * 20) + 1) + c.init; });
+  turnOrder = [...alive].sort((a, b) => b.initiativeScore - a.initiativeScore);
   currentTurnIndex = 0;
   round = 1;
   combatActive = true;
@@ -43,7 +43,7 @@ function resetCombat() {
   turnOrder = [];
   currentTurnIndex = -1;
   round = 1;
-  characters.forEach(c => c.init = 0);
+  characters.forEach(c => { delete c.initiativeScore; });
   document.getElementById('btnCombat').style.display = '';
   document.getElementById('btnNextTurn').style.display = 'none';
   document.getElementById('turnIndicator').textContent = 'Ход: —';

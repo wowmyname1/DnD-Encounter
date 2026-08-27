@@ -151,8 +151,8 @@ function renderTokens() {
   map.querySelectorAll('.map-token').forEach(t => t.remove());
   characters.forEach(c => {
     const token = document.createElement('div');
-    if (c.hpCur <= 0) token.classList.add("dead-token");
     token.className = 'map-token';
+    if (c.hpCur <= 0) token.classList.add("dead-token");
     const isActive = combatActive && turnOrder[currentTurnIndex]?.id === c.id;
     if (isActive) token.classList.add('active-token');
     token.style.background = c.color;

@@ -26,28 +26,9 @@ function onCardClick(event, charId) {
   if (activeRoll.mode !== 'spread') return;
   const selectedDice = activeRoll.dice.filter(d => d.selected && !d.spent);
   if (selectedDice.length === 0) { showToast('Выберите кубик для разброса'); return; }
-  const die = selectedDice[0];
-  applySpreadToCharacter(charId); return;
-  die.spent = true;
-  die.selected = false;
-  const remaining = activeRoll.dice.filter(d => !d.spent);
-  if (remaining.length === 0) clearActiveRoll();
-  else {
-    updateActiveRollUI();
-    renderAll();
-    const remainingCount = activeRoll.dice.filter(d => d.selected && !d.spent).length;
-    showToast(`Осталось кубиков: ${remainingCount}`);
-  }
+  applySpreadToCharacter(charId);
 }
 
-function applyAoE() {
-  if (!activeRoll || activeRoll.aoeTargets.size === 0) return;
-  const val = getSelectedSum();
-  activeRoll.aoeTargets.forEach(charId => applyDamage(charId, val));
-  clearSelection();
-  activeRoll.aoeTargets.clear();
-  renderAll();
-}
 
 function showFloatingText(cardEl, text, color) {
   const rect = cardEl.getBoundingClientRect();

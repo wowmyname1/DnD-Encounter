@@ -58,9 +58,9 @@ function setupGlobalListeners() {
       else if (e.key === 'Enter' && activeRoll.mode === 'aoe') applyAoE();
       if (activeRoll.mode === 'single' && lastTargetId) {
         const key = e.key.toLowerCase();
-        if (key === 'd') { applyDamage(lastTargetId, getSelectedSum()); clearSelection(); }
-        else if (key === 'h') { applyHeal(lastTargetId, getSelectedSum()); clearSelection(); }
-        else if (key === 't') { applyTempHp(lastTargetId, getSelectedSum()); clearSelection(); }
+        if (key === 'd') { applyDamage(lastTargetId, getSelectedSum()); consumeSelectedDice(); }
+        else if (key === 'h') { applyHeal(lastTargetId, getSelectedSum()); consumeSelectedDice(); }
+        else if (key === 't') { applyTempHp(lastTargetId, getSelectedSum()); consumeSelectedDice(); }
       }
     }
   });
