@@ -4,21 +4,6 @@ let spellWizard = { id: null, name: '', level: 0, school: 'Воплощение'
 function openStatusCatalog() { document.getElementById('statusCatalogModal').classList.add('show'); renderStatusCatalog(); }
 function openSpellCatalog() { document.getElementById('spellCatalogModal').classList.add('show'); renderSpellCatalog(); }
 
-function renderStatusCatalog() {
-  const grid = document.getElementById('statusCatalogGrid');
-  const search = (document.getElementById('statusSearch').value || '').toLowerCase();
-  let allStatuses = [...STATUS_CATALOG, ...customStatuses];
-  if (search) allStatuses = allStatuses.filter(s => s.name.toLowerCase().includes(search));
-  grid.innerHTML = allStatuses.map(s => `
-    <div class="catalog-item" onclick="editStatusFromCatalog('${s.id}')">
-      <div class="catalog-item-header"><div class="catalog-item-name">${s.icon} ${escapeHtml(s.name)}</div></div>
-      <div class="catalog-item-desc">${s.description || 'Без описания'}</div>
-      <div class="catalog-item-actions">
-        <button onclick="event.stopPropagation(); editStatusFromCatalog('${s.id}')">✏️ Редакт.</button>
-        <button onclick="event.stopPropagation(); applyStatusFromCatalog('${s.id}')">➕ Применить</button>
-      </div>
-    </div>`).join('') || '<p style="color:var(--text-dim); text-align:center; padding:20px;">Нет статусов в каталоге</p>';
-}
 
 function renderSpellCatalog() {
   const grid = document.getElementById('spellCatalogGrid');

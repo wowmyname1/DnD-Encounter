@@ -192,15 +192,35 @@ function saveWizardSpell() {
 }
 
 function saveCustomData() {
-  localStorage.setItem('dndCustomStatuses', JSON.stringify(customStatuses));
-  localStorage.setItem('dndCustomSpells', JSON.stringify(customSpells));
+  // Сохраняем в общем состоянии, а не отдельно
+  saveGameState();
 }
 
 function loadCustomData() {
+  // Данные загружаются через loadGameState
   try {
-    customStatuses = JSON.parse(localStorage.getItem('dndCustomStatuses') || '[]');
-    customSpells = JSON.parse(localStorage.getItem('dndCustomSpells') || '[]');
+    const saved = localStorage.getItem('dndEncounterState');
+    if (!saved) { customStatuses = []; customSpells = []; return; }
+    const state = JSON.parse(saved);
+    customStatuses = state.customStatuses || [];
+    customSpells = state.customSpells || [];
   } catch(e) { customStatuses = []; customSpells = []; }
+}
+
+function deleteCustomStatus(id) {
+  customStatuses = customStatuses.filter(s => s.id !== id);
+  STATUS_DEFS.permanent = STATUS_DEFS.permanent.filter(s => s.id !== id);
+  STATUS_DEFS.timed = STATUS_DEFS.timed.filter(s => s.id !== id);
+  saveGameState();
+  renderStatusCatalog();
+  showToast('Статус удалён');
+}
+
+function deleteCustomSpell(id) {
+  customSpells = customSpells.filter(s => s.id !== id);
+  saveGameState();
+  renderSpellCatalog();
+  showToast('Заклинание удалено');
 }
 
 function editStatusFromCatalog(id) {
