@@ -74,5 +74,18 @@ function setupGlobalListeners() {
   });
 }
 
-init();
+// Загрузка состояния при старте
+(function initApp() {
+  const loaded = loadGameState();
+  if (!loaded) {
+    // Если нет сохраненных данных, инициализируем примерами
+    init();
+  } else {
+    // Восстанавливаем интерфейс после загрузки
+    renderAll();
+    placeTokens();
+    setupDiceInput();
+    setupGlobalListeners();
+  }
+})();
 

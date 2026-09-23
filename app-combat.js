@@ -10,6 +10,7 @@ function startCombat() {
   document.getElementById('btnNextTurn').style.display = '';
   updateTurnInfo();
   renderAll();
+  saveGameState();
   showToast(`⚔️ Бой начался!`);
 }
 
@@ -28,6 +29,7 @@ const expired = tickStatuses(currentChar.id);
   }
   updateTurnInfo();
   renderAll();
+  saveGameState();
   if (window.AppEvents) { if (turnOrder[currentTurnIndex]) window.AppEvents.emit("turn:start", turnOrder[currentTurnIndex].id); }
 }
 
@@ -49,6 +51,7 @@ function resetCombat() {
   document.getElementById('turnIndicator').textContent = 'Ход: —';
   document.getElementById('roundBadge').textContent = 'Раунд 1';
   renderAll();
+  saveGameState();
 }
 
 function centerTokens() {

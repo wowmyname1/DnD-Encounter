@@ -16,6 +16,7 @@ function applyDamage(id, amount) {
     if (absorbed > 0) txt += ` (🛡️${absorbed})`;
     showFloatingText(cardEl, txt, '#e94560');
   }
+  saveGameState();
   if (window.AppEvents) { if (!window.__inTrigger) window.AppEvents.emit("damage:taken", { id: id, amount: amount }); }
 }
 
@@ -28,6 +29,7 @@ function applyHeal(id, amount) {
   renderAll();
   const cardEl = document.querySelector(`.char-card[data-char-id="${id}"]`);
   if (cardEl) showFloatingText(cardEl, `+${actual}`, '#4ecca3');
+  saveGameState();
 }
 
 function applyTempHp(id, amount) {
@@ -37,6 +39,7 @@ function applyTempHp(id, amount) {
   renderAll();
   const cardEl = document.querySelector(`.char-card[data-char-id="${id}"]`);
   if (cardEl) showFloatingText(cardEl, `🛡️+${amount}`, '#48dbfb');
+  saveGameState();
 }
 
 function changeHp(id, delta) {
