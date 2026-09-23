@@ -1,9 +1,12 @@
 function removeCharacter(id) {
+  const c = characters.find(ch => ch.id === id);
   characters = characters.filter(c => c.id !== id);
   if (combatActive) {
     turnOrder = turnOrder.filter(c => c.id !== id);
     if (currentTurnIndex >= turnOrder.length) currentTurnIndex = 0;
   }
+  if (window.AppEvents && c) window.AppEvents.emit('character:removed', c);
+  saveGameState();
   renderAll();
 }
 
@@ -62,6 +65,8 @@ function saveStatus() {
   c.statuses.push(status);
   closeModal('statusModal');
   showToast(`${status.icon} ${status.name} → ${c.name}`);
+  if (window.AppEvents) window.AppEvents.emit('status:applied', { characterId: charId, status: status });
+  saveGameState();
   renderAll();
 }
 
@@ -71,6 +76,8 @@ function removeStatus(charId, uid) {
   const s = c.statuses.find(st => st.uid === uid);
   c.statuses = c.statuses.filter(st => st.uid !== uid);
   if (s) showToast(`Снят: ${s.icon} ${s.name}`);
+  if (window.AppEvents && s) window.AppEvents.emit('status:removed', { characterId: charId, status: s });
+  saveGameState();
   renderAll();
 }
 
@@ -832,10 +839,12 @@ function saveCharacter() {
         c.hpCur = Math.min(c.hpCur, hpMax);
         if (c.hpCur < 0) c.hpCur = 0;
       }
+      if (window.AppEvents) window.AppEvents.emit('character:updated', c);
+      saveGameState();
     }
   } else {
     const map = document.getElementById('mapContainer');
-    characters.push({
+    const newChar = {
       id: nextId++,
       type,
       name,
@@ -855,7 +864,10 @@ function saveCharacter() {
       tempHp: 0,
       x: 100 + Math.random() * (map.clientWidth - 200),
       y: 100 + Math.random() * (map.clientHeight - 200)
-    });
+    };
+    characters.push(newChar);
+    if (window.AppEvents) window.AppEvents.emit('character:created', newChar);
+    saveGameState();
   }
   closeModal('charModal');
   renderAll();
