@@ -101,9 +101,12 @@ function clearSelection() { if (!activeRoll) return; activeRoll.dice.forEach(d =
 function getSelectedSum() {
   if (!activeRoll) return 0;
   let posSum = 0, negSum = 0;
+  // Считаем только выбранные и НЕ потраченные кубики
   activeRoll.dice.filter(d => d.selected && !d.spent).forEach(d => {
     if (d.sign === '+') posSum += d.value; else negSum += d.value;
   });
+  // Модификатор добавляем всегда, если есть хотя бы один непотраченный кубик или если все кубики потрачены, но модификатор еще не учтен
+  // В текущей реализации модификатор всегда добавляется к сумме выбранных кубиков
   return posSum - negSum + activeRoll.modifier;
 }
 
