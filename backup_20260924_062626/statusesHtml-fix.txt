@@ -1,0 +1,14 @@
+    const statusesHtml = c.statuses.map(s => {
+      const durText = s.type === 'timed' ? `<span class="status-dur">${s.duration}</span>` : '';
+      const permClass = s.type === 'permanent' ? 'permanent' : '';
+      
+      const hasManualTrigger = s.logic?.nodes?.some(n => n.type === 'trigger' && n.event === 'manual');
+      const manualBtn = hasManualTrigger 
+        ? `<button class="status-action-btn" onclick="event.stopPropagation(); triggerManualStatus(${c.id}, ${s.uid})">▶️</button>` 
+        : '';
+      
+      return `<span class="status-badge ${permClass}" style="background:${s.color}" title="${escapeAttr(s.name)}${s.type === 'timed' ? ' (' + s.duration + ' раундов)' : ''}">
+        <span class="status-icon">${s.icon}</span>${durText}${manualBtn}
+        <button class="status-remove-btn" onclick="event.stopPropagation(); removeStatus(${c.id}, ${s.uid})">✕</button>
+      </span>`;
+    }).join('');

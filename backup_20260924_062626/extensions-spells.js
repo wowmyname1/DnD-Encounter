@@ -93,6 +93,14 @@ function executeSpellOnTargets() {
   }, 3000);
 }
 
+function calculateSpellDC(spell, caster) {
+  if (!spell.logic.save) return 10;
+  if (caster) {
+    const prof = Math.ceil((caster.level || 1) / 4) + 1;
+    return 8 + prof + 3;
+  }
+  return 13;
+}
 
 function applySpellEffect(charId, effect, halfDamage = false) {
   const c = characters.find(ch => ch.id === charId);
@@ -155,6 +163,101 @@ window.applySpellTargetClasses = function () {
   }
 };
 
+function applySpellToTargets() {
+  if (!window.activeSpell || !window.activeSpell.spell) return;
+  
+  const spell = window.activeSpell.spell;
+  const targets = Array.from(window.activeSpell.targets || []);
+  
+  if (targets.length === 0) {
+    showToast('❌ Выберите цели');
+    return;
+  }
+  
+  const logic = spell.logic || {};
+  const targetMode = logic.targetMode || 'single';
+  const save = logic.save;
+  
+  // Определяем бонус заклинательной характеристики
+  const caster = null; // пока не знаем кто кастует
+  const profBonus = 2;
+  const spellMod = 3; // заглушка
+  const spellSaveDC = save ? 8 + profBonus + spellMod : 0;
+  
+  targets.forEach(function (charId) {
+    const c = characters.find(function (ch) { return ch.id === charId; });
+    if (!c) return;
+    
+    let effect = logic.onFail;
+    let saveResult = 'fail';
+    
+    if (save && save.ability) {
+      const abilityScore = c.abilities ? c.abilities[save.ability.toLowerCase()] : 10;
+      const abilityMod = Math.floor((abilityScore - 10) / 2);
+      const roll = Math.floor(Math.random() * 20) + 1;
+      const saveTotal = roll + abilityMod;
+      
+      saveResult = saveTotal >= spellSaveDC ? 'success' : 'fail';
+      effect = saveResult === 'success' ? logic.onSuccess : logic.onFail;
+      
+      const cardEl = document.querySelector('.char-card[data-char-id="' + charId + '"]');
+      if (cardEl) {
+        const text = saveResult === 'success' 
+          ? '✅ Спасбросок: ' + saveTotal + ' (DC ' + spellSaveDC + ')'
+          : '❌ Провал: ' + saveTotal + ' (DC ' + spellSaveDC + ')';
+        showFloatingText(cardEl, text, saveResult === 'success' ? '#4ecca3' : '#e94560');
+      }
+    }
+    
+    if (effect) {
+      applySpellEffect(charId, effect, spell);
+    }
+  });
+  
+  clearSpellSelection();
+  renderAll();
+}
+
+function applySpellEffect(charId, effect, spell) {
+  const c = characters.find(function (ch) { return ch.id === charId; });
+  if (!c) return;
+  
+  const cardEl = document.querySelector('.char-card[data-char-id="' + charId + '"]');
+  
+  if (effect.type === 'damage') {
+    const result = parseDiceExpression(effect.formula || '1d6');
+    const count = effect.count || 1;
+    const total = result.total * count;
+    applyDamage(charId, total);
+    if (cardEl) {
+      showFloatingText(cardEl, '-' + total + ' ' + spell.icon, '#e94560');
+    }
+  } else if (effect.type === 'heal') {
+    const result = parseDiceExpression(effect.formula || '1d8');
+    applyHeal(charId, result.total);
+    if (cardEl) {
+      showFloatingText(cardEl, '+' + result.total + ' ' + spell.icon, '#4ecca3');
+    }
+  } else if (effect.type === 'applyStatus') {
+    const statusDef = findStatusById(effect.statusId);
+    if (statusDef) {
+      const duration = effect.duration || 3;
+      c.statuses.push({
+        uid: statusUid++,
+        id: statusDef.id,
+        name: statusDef.name,
+        icon: statusDef.icon,
+        color: statusDef.color || '#e94560',
+        type: 'timed',
+        duration: duration,
+        logic: statusDef.logic || null
+      });
+      if (cardEl) {
+        showFloatingText(cardEl, statusDef.icon + ' ' + statusDef.name, statusDef.color || '#48dbfb');
+      }
+    }
+  }
+}
 
 function findStatusById(id) {
   if (typeof STATUS_CATALOG !== 'undefined') {
@@ -174,45 +277,4 @@ function clearSpellSelection() {
   const btn = document.getElementById('spellCastBtn');
   if (btn) btn.remove();
   if (typeof renderAll === "function") renderAll();
-}
-
-function calculateSpellDC(spell, caster) {
-  if (!spell.logic.save) return 10;
-  
-  if (spell.logic.save.dcFormula) {
-    const formula = spell.logic.save.dcFormula;
-    const prof = caster ? Math.ceil((caster.level || 1) / 4) + 1 : 2;
-    const spellAbility = spell.logic.save.ability?.toLowerCase();
-    const abilityScore = caster?.abilities?.[spellAbility] || 10;
-    const mod = Math.floor((abilityScore - 10) / 2);
-    
-    let dc = formula
-      .replace(/prof/g, prof)
-      .replace(/mod/g, mod)
-      .replace(/\s+/g, '');
-    
-    try {
-      const parts = dc.split(/([+-])/);
-      let result = parseInt(parts[0]) || 0;
-      for (let i = 1; i < parts.length; i += 2) {
-        const op = parts[i];
-        const val = parseInt(parts[i + 1]) || 0;
-        if (op === '+') result += val;
-        if (op === '-') result -= val;
-      }
-      return result;
-    } catch (e) {
-      return 10 + prof + mod;
-    }
-  }
-  
-  if (caster) {
-    const prof = Math.ceil((caster.level || 1) / 4) + 1;
-    const spellAbility = spell.logic.save.ability?.toLowerCase();
-    const abilityScore = caster?.abilities?.[spellAbility] || 10;
-    const mod = Math.floor((abilityScore - 10) / 2);
-    return 8 + prof + mod;
-  }
-  
-  return 13;
 }

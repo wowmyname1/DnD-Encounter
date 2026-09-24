@@ -1,5 +1,5 @@
 (function () {
-  const additionalStatuses = [
+  const expandedStatuses = [
     {
       id: 'poison',
       name: 'Яд',
@@ -67,9 +67,10 @@
     }
   ];
 
-  additionalStatuses.forEach(function (status) {
-    if (!STATUS_CATALOG.find(s => s.id === status.id)) {
-      STATUS_CATALOG.push(status);
-    }
-  });
+  if (typeof STATUS_CATALOG !== 'undefined' && Array.isArray(STATUS_CATALOG)) {
+    STATUS_CATALOG.length = 0;
+    expandedStatuses.forEach(function (s) {
+      STATUS_CATALOG.push(Object.assign({}, s));
+    });
+  }
 })();
